@@ -28,7 +28,7 @@
  * \addtogroup group_board_libs_platform XENSIV PAS GAS Sensor platform functions
  * \{
  * XENSIV PAS GAS Sensor platform functions.
- * 
+ *
  * To adapt the driver to your platform you need to provide an implementation for the functions
  * declared in this file.
  *
@@ -53,7 +53,7 @@ extern "C" {
  * @param[in] rx_len I2C receive data size
  * @return XENSIV_PAS_GAS_OK if the I2C transfer was successful; an error indicating what went wrong otherwise
  */
-int32_t xensiv_pas_gas_plat_i2c_transfer(void * ctx, uint16_t dev_addr, const uint8_t * tx_buffer, size_t tx_len, uint8_t * rx_buffer, size_t rx_len);
+int32_t xensiv_pas_gas_plat_i2c_transfer(void *ctx, uint16_t dev_addr, const uint8_t *tx_buffer, size_t tx_len, uint8_t *rx_buffer, size_t rx_len);
 
 /**
  * @brief Target platform-specific function to read over UART
@@ -63,7 +63,7 @@ int32_t xensiv_pas_gas_plat_i2c_transfer(void * ctx, uint16_t dev_addr, const ui
  * @param[in] len Number of bytes to receive
  * @return XENSIV_PAS_GAS_OK if the UART read was successful; an error indicating what went wrong otherwise
  */
-int32_t xensiv_pas_gas_plat_uart_read(void *ctx, uint8_t * data, size_t len);
+int32_t xensiv_pas_gas_plat_uart_read(void *ctx, uint8_t *data, size_t len);
 
 /**
  * @brief Target platform-specific function to write over UART
@@ -73,18 +73,18 @@ int32_t xensiv_pas_gas_plat_uart_read(void *ctx, uint8_t * data, size_t len);
  * @param[in] len Number of bytes to transmit
  * @return XENSIV_PAS_GAS_OK if the UART write was successful; an error indicating what went wrong otherwise
  */
-int32_t xensiv_pas_gas_plat_uart_write(void *ctx, uint8_t * data, size_t len);
+int32_t xensiv_pas_gas_plat_uart_write(void *ctx, uint8_t *data, size_t len);
 
 /**
  * @brief Target platform-specific function that waits for a specified time period in milliseconds
  *
- * @param[in] ms Number of miliseconds to wait for
+ * @param[in] ms Number of milliseconds to wait for
  */
 void xensiv_pas_gas_plat_delay(uint32_t ms);
 
 /**
  * @brief Target platform-specific function to reverse the byte order (16-bit)
- * A sample implementation would look like 
+ * A sample implementation would look like
  * \code
  *  return ((uint16_t)(((x & 0x00ffU) << 8) |
  *                     ((x & 0xff00U) >> 8)));
@@ -95,7 +95,7 @@ void xensiv_pas_gas_plat_delay(uint32_t ms);
 uint16_t xensiv_pas_gas_plat_htons(uint16_t x);
 
 /**
- * @brief Target platform-specific function that implements a runtime assertion; used to verify the assumptions made by the program and take appropiate actions if assumption is false
+ * @brief Target platform-specific function that implements a runtime assertion; used to verify the assumptions made by the program and take appropriate actions if assumption is false
  *
  * @param[in] expr Expression to be verified
  */
