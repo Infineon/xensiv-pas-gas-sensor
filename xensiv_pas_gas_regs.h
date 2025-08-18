@@ -1,3 +1,4 @@
+
 /***********************************************************************************************//**
  * \file xensiv_pas_gas_regs.h
  *
@@ -6,7 +7,7 @@
  *
  ***************************************************************************************************
  * \copyright
- * Copyright 2021-2022 Infineon Technologies AG
+ * Copyright 2025-2026 Infineon Technologies AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,11 +26,15 @@
 #ifndef XENSIV_PAS_GAS_REGS_H_
 #define XENSIV_PAS_GAS_REGS_H_
 
+#include "xensiv_pas_gas_r290_regs.h"
+#include "xensiv_pas_gas_co2_regs.h"
+
 /**
  * \addtogroup group_board_libs XENSIV™ PAS GAS sensor
  * \{
  */
 
+ //------------------- Common Register Addresses -------------------//
 #define XENSIV_PAS_GAS_REG_PROD_ID                       (0x00U)                                                 /*!< REG_PROD: Address */
 #define XENSIV_PAS_GAS_REG_SENS_STS                      (0x01U)                                                 /*!< SENS_STS: Address */
 #define XENSIV_PAS_GAS_REG_MEAS_RATE_H                   (0x02U)                                                 /*!< MEAS_RATE_H: Address */
@@ -48,11 +53,13 @@
 #define XENSIV_PAS_GAS_REG_SCRATCH_PAD                   (0x0fU)                                                 /*!< SCRATCH_PAD: Address */
 #define XENSIV_PAS_GAS_REG_SENS_RST                      (0x10U)                                                 /*!< SENS_RST: Address */
 
+//------------------- PROD_ID Bitfields -------------------//
 #define XENSIV_PAS_GAS_REG_PROD_ID_REV_POS               (0U)                                                    /*!< REG_PROD: ID_REV position */
 #define XENSIV_PAS_GAS_REG_PROD_ID_REV_MSK               (0x1fU << XENSIV_PAS_GAS_REG_PROD_ID_REV_POS)            /*!< REG_PROD: ID_REV mask */
 #define XENSIV_PAS_GAS_REG_PROD_ID_PROD_POS              (5U)                                                    /*!< REG_PROD: ID_PROD position */
 #define XENSIV_PAS_GAS_REG_PROD_ID_PROD_MSK              (0x07U << XENSIV_PAS_GAS_REG_PROD_ID_PROD_POS)           /*!< REG_PROD: ID_PROD mask */
 
+//------------------- SENS_STS Bitfields -------------------//
 #define XENSIV_PAS_GAS_REG_SENS_STS_ICCER_CLR_POS        (0U)                                                    /*!< SENS_STS: ICCER_CLR position */
 #define XENSIV_PAS_GAS_REG_SENS_STS_ICCER_CLR_MSK        (0x01U << XENSIV_PAS_GAS_REG_SENS_STS_ICCER_CLR_POS)     /*!< SENS_STS: ICCER_CLR mask */
 #define XENSIV_PAS_GAS_REG_SENS_STS_ORVS_CLR_POS         (1U)                                                    /*!< SENS_STS: ORVS_CLR position */
@@ -65,32 +72,30 @@
 #define XENSIV_PAS_GAS_REG_SENS_STS_ORVS_MSK             (0x01U << XENSIV_PAS_GAS_REG_SENS_STS_ORVS_POS)          /*!< SENS_STS: ORVS mask */
 #define XENSIV_PAS_GAS_REG_SENS_STS_ORTMP_POS            (5U)                                                    /*!< SENS_STS: ORTMP position */
 #define XENSIV_PAS_GAS_REG_SENS_STS_ORTMP_MSK            (0x01U << XENSIV_PAS_GAS_REG_SENS_STS_ORTMP_POS)         /*!< SENS_STS: ORTMP mask */
-#define XENSIV_PAS_GAS_REG_SENS_STS_PWM_DIS_ST_POS       (6U)                                                    /*!< SENS_STS: PWM_DIS_ST position */
-#define XENSIV_PAS_GAS_REG_SENS_STS_PWM_DIS_ST_MSK       (0x01U << XENSIV_PAS_GAS_REG_SENS_STS_PWM_DIS_ST_POS)    /*!< SENS_STS: PWM_DIS_ST mask */
 #define XENSIV_PAS_GAS_REG_SENS_STS_SEN_RDY_POS          (7U)                                                    /*!< SENS_STS: SEN_RDY position */
 #define XENSIV_PAS_GAS_REG_SENS_STS_SEN_RDY_MSK          (0x01U << XENSIV_PAS_GAS_REG_SENS_STS_SEN_RDY_POS)       /*!< SENS_STS: SEN_RDY mask */
 
+//------------------- MEAS_RATE Bitfields -------------------//
 #define XENSIV_PAS_GAS_REG_MEAS_RATE_H_VAL_POS           (0U)                                                    /*!< MEAS_RATE_H: VAL position */
 #define XENSIV_PAS_GAS_REG_MEAS_RATE_H_VAL_MSK           (0xffU << XENSIV_PAS_GAS_REG_MEAS_RATE_H_VAL_POS)        /*!< MEAS_RATE_H: VAL mask */
 
 #define XENSIV_PAS_GAS_REG_MEAS_RATE_L_VAL_POS           (0U)                                                    /*!< MEAS_RATE_L: VAL position */
 #define XENSIV_PAS_GAS_REG_MEAS_RATE_L_VAL_MSK           (0xffU << XENSIV_PAS_GAS_REG_MEAS_RATE_L_VAL_POS)        /*!< MEAS_RATE_L: VAL mask */
 
+//------------------- MEAS_CFG Bitfields -------------------//
 #define XENSIV_PAS_GAS_REG_MEAS_CFG_OP_MODE_POS          (0U)                                                    /*!< MEAS_CFG: OP_MODE position */
 #define XENSIV_PAS_GAS_REG_MEAS_CFG_OP_MODE_MSK          (0x03U << XENSIV_PAS_GAS_REG_MEAS_CFG_OP_MODE_POS)       /*!< MEAS_CFG: OP_MODE mask */
 #define XENSIV_PAS_GAS_REG_MEAS_CFG_BOC_CFG_POS          (2U)                                                    /*!< MEAS_CFG: BOC_CFG position */
 #define XENSIV_PAS_GAS_REG_MEAS_CFG_BOC_CFG_MSK          (0x03U << XENSIV_PAS_GAS_REG_MEAS_CFG_BOC_CFG_POS)       /*!< MEAS_CFG: BOC_CFG mask */
-#define XENSIV_PAS_GAS_REG_MEAS_CFG_PWM_MODE_POS         (4U)                                                    /*!< MEAS_CFG: PWM_MODE position */
-#define XENSIV_PAS_GAS_REG_MEAS_CFG_PWM_MODE_MSK         (0x01U << XENSIV_PAS_GAS_REG_MEAS_CFG_PWM_MODE_POS)      /*!< MEAS_CFG: PWM_MODE mask */
-#define XENSIV_PAS_GAS_REG_MEAS_CFG_PWM_OUTEN_POS        (5U)                                                    /*!< MEAS_CFG: PWM_OUTEN position */
-#define XENSIV_PAS_GAS_REG_MEAS_CFG_PWM_OUTEN_MSK        (0x01U << XENSIV_PAS_GAS_REG_MEAS_CFG_PWM_OUTEN_POS)     /*!< MEAS_CFG: PWM_OUTEN mask */
 
+//------------------- GAS Data Fields -------------------//
 #define XENSIV_PAS_GAS_REG_GASPPM_H_VAL_POS              (0U)                                                    /*!< GASPPM_H: VAL position */
 #define XENSIV_PAS_GAS_REG_GASPPM_H_VAL_MSK              (0xffU << XENSIV_PAS_GAS_REG_GASPPM_H_VAL_POS)           /*!< GASPPM_H: VAL mask */
 
 #define XENSIV_PAS_GAS_REG_GASPPM_L_VAL_POS              (0U)                                                    /*!< GASPPM_L: VAL position */
 #define XENSIV_PAS_GAS_REG_GASPPM_L_VAL_MSK              (0xffU << XENSIV_PAS_GAS_REG_GASPPM_L_VAL_POS)           /*!< GASPPM_L: VAL mask */
 
+//------------------- MEAS_STS Bitfields -------------------//
 #define XENSIV_PAS_GAS_REG_MEAS_STS_ALARM_CLR_POS        (0U)                                                    /*!< MEAS_STS: ALARM_CLR position */
 #define XENSIV_PAS_GAS_REG_MEAS_STS_ALARM_CLR_MSK        (0x01U << XENSIV_PAS_GAS_REG_MEAS_STS_ALARM_CLR_POS)     /*!< MEAS_STS: ALARM_CLR mask */
 #define XENSIV_PAS_GAS_REG_MEAS_STS_INT_STS_CLR_POS      (1U)                                                    /*!< MEAS_STS: INT_STS_CLR position */
@@ -102,6 +107,7 @@
 #define XENSIV_PAS_GAS_REG_MEAS_STS_DRDY_POS             (4U)                                                    /*!< MEAS_STS: DRDY position */
 #define XENSIV_PAS_GAS_REG_MEAS_STS_DRDY_MSK             (0x01U << XENSIV_PAS_GAS_REG_MEAS_STS_DRDY_POS)          /*!< MEAS_STS: DRDY mask */
 
+//------------------- INT_CFG Bitfields -------------------//
 #define XENSIV_PAS_GAS_REG_INT_CFG_ALARM_TYP_POS         (0U)                                                    /*!< INT_CFG: ALARM_TYP position */
 #define XENSIV_PAS_GAS_REG_INT_CFG_ALARM_TYP_MSK         (0x01U << XENSIV_PAS_GAS_REG_INT_CFG_ALARM_TYP_POS)      /*!< INT_CFG: ALARM_TYP mask */
 #define XENSIV_PAS_GAS_REG_INT_CFG_INT_FUNC_POS          (1U)                                                    /*!< INT_CFG: INT_FUNC position */
@@ -109,27 +115,32 @@
 #define XENSIV_PAS_GAS_REG_INT_CFG_INT_TYP_POS           (4U)                                                    /*!< INT_CFG: INT_TYP position */
 #define XENSIV_PAS_GAS_REG_INT_CFG_INT_TYP_MSK           (0x01U << XENSIV_PAS_GAS_REG_INT_CFG_INT_TYP_POS)        /*!< INT_CFG: INT_TYP mask */
 
+//------------------- ALARM Bitfields -------------------//
 #define XENSIV_PAS_GAS_REG_ALARM_TH_H_VAL_POS            (0U)                                                    /*!< ALARM_TH_H: VAL position */
 #define XENSIV_PAS_GAS_REG_ALARM_TH_H_VAL_MSK            (0xffU << XENSIV_PAS_GAS_REG_ALARM_TH_H_VAL_POS)         /*!< ALARM_TH_H: VAL mask */
 
 #define XENSIV_PAS_GAS_REG_ALARM_TH_L_VAL_POS            (0U)                                                    /*!< ALARM_TH_L: VAL position */
 #define XENSIV_PAS_GAS_REG_ALARM_TH_L_VAL_MSK            (0xffU << XENSIV_PAS_GAS_REG_ALARM_TH_L_VAL_POS)         /*!< ALARM_TH_L: VAL mask */
 
+//-------------------Pressure Reference Bitfields----------//
 #define XENSIV_PAS_GAS_REG_PRESS_REF_H_VAL_POS           (0U)                                                    /*!< PRESS_REF_H: VAL position */
 #define XENSIV_PAS_GAS_REG_PRESS_REF_H_VAL_MSK           (0xffU << XENSIV_PAS_GAS_REG_PRESS_REF_H_VAL_POS)        /*!< PRESS_REF_H: VAL mask */
 
 #define XENSIV_PAS_GAS_REG_PRESS_REF_L_VAL_POS           (0U)                                                    /*!< PRESS_REF_L: VAL position */
 #define XENSIV_PAS_GAS_REG_PRESS_REF_L_VAL_MSK           (0xffU << XENSIV_PAS_GAS_REG_PRESS_REF_L_VAL_POS)        /*!< PRESS_REF_L: VAL mask */
 
+//-------------------Calibration Reference Bitfields----------//
 #define XENSIV_PAS_GAS_REG_CALIB_REF_H_VAL_POS           (0U)                                                    /*!< CALIB_REF_H: VAL position */
 #define XENSIV_PAS_GAS_REG_CALIB_REF_H_VAL_MSK           (0xffU << XENSIV_PAS_GAS_REG_CALIB_REF_H_VAL_POS)        /*!< CALIB_REF_H: VAL mask */
 
 #define XENSIV_PAS_GAS_REG_CALIB_REF_L_VAL_POS           (0U)                                                    /*!< CALIB_REF_L: VAL position */
 #define XENSIV_PAS_GAS_REG_CALIB_REF_L_VAL_MSK           (0xffU << XENSIV_PAS_GAS_REG_CALIB_REF_L_VAL_POS)        /*!< CALIB_REF_L: VAL mask */
 
+//------------------- Scratch Pad Bitfields -------------------//
 #define XENSIV_PAS_GAS_REG_SCRATCH_PAD_VAL_POS           (0U)                                                    /*!< SCRATCH_PAD: VAL position */
 #define XENSIV_PAS_GAS_REG_SCRATCH_PAD_VAL_MSK           (0xffU << XENSIV_PAS_GAS_REG_SCRATCH_PAD_VAL_POS)        /*!< SCRATCH_PAD: VAL mask */
 
+//------------------- SENS_RST Bitfields -------------------//
 #define XENSIV_PAS_GAS_REG_SENS_RST_SRTRG_POS            (0U)                                                    /*!< SENS_RST: SRTRG position */
 #define XENSIV_PAS_GAS_REG_SENS_RST_SRTRG_MSK            (0xffU << XENSIV_PAS_GAS_REG_SENS_RST_SRTRG_POS)         /*!< SENS_RST: SRTRG mask */
 
