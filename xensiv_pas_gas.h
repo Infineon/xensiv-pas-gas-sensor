@@ -32,6 +32,12 @@
 #include "xensiv_pas_gas_regs.h"
 #include "xensiv_pas_gas_platform.h"
 
+#if defined(XENSIV_PAS_GAS_R290)
+#include "xensiv_pas_gas_r290.h"
+#elif defined(XENSIV_PAS_GAS_CO2)
+#include "xensiv_pas_gas_co2.h"
+#endif
+
 /**
  * \addtogroup group_board_libs XENSIV™ PAS GAS sensor
  * \{
@@ -66,13 +72,6 @@
 /** Result code indicating that a new GAS value is not yet ready */
 #define XENSIV_PAS_GAS_READ_NRDY                 (7)
 
-/** Minimum allowed measurement rate */
-#define XENSIV_PAS_GAS_MEAS_RATE_MIN            (5U)
-
-#ifdef XENSIV_PAS_GAS_R290
-#define XENSIV_PAS_GAS_MEAS_RATE_MIN           (3U)
-#endif  
-
 /** Maximum allowed measurement rate */
 #define XENSIV_PAS_GAS_MEAS_RATE_MAX             (4095U)
 
@@ -80,15 +79,6 @@
 #define XENSIV_PAS_GAS_I2C_ADDR                  (0x28U)
 
 /********************************* Type definitions **************************************/
-
-/** Enum defining the different device commands */
-typedef enum
-{
-  XENSIV_PAS_GAS_CMD_SOFT_RESET = 0xA3U,               /**< Soft reset the sensor (R290 & CO2) */
-  XENSIV_PAS_GAS_CO2_CMD_RESET_ABOC = 0xBCU,           /**< Resets the ABOC context (CO2 only) */
-  XENSIV_PAS_GAS_CO2_CMD_SAVE_FCS_CALIB_OFFSET = 0xCFU,/**< Saves the force calibration offset into the non volatile memory (CO2 only) */
-  XENSIV_PAS_GAS_CO2_CMD_RESET_FCS = 0xFCU,            /**< Resets the forced calibration correction factor (CO2 only) */
-} xensiv_pas_gas_cmd_t;
 
 /** Enum defining the different device operating modes */
 typedef enum
@@ -107,13 +97,6 @@ typedef enum
     XENSIV_PAS_GAS_BOC_CFG_AUTOMATIC = 1U,               /**< The offset is periodically updated at each BOC computation */
     XENSIV_PAS_GAS_BOC_CFG_FORCED = 2U                   /**< Forced compensation */
 } xensiv_pas_gas_boc_cfg_t;
-
-/** Enum defining the PWM mode configuration */
-typedef enum
-{
-    XENSIV_PAS_GAS_PWM_MODE_SINGLE_PULSE = 0U,           /**< PWM single-pulse */
-    XENSIV_PAS_GAS_PWM_MODE_TRAIN_PULSE = 1U             /**< PWM pulse-train mode */
-} xensiv_pas_gas_pwm_mode_t;
 
 /** Enum defining different interrupt active levels */
 typedef enum
@@ -150,66 +133,6 @@ typedef union
     } b;                                                /*!< Structure used for bit  access */
     uint8_t u;                                          /*!< Type used for byte access */
 } xensiv_pas_gas_id_t;
-
-/** Structure of the sensor's status register (SENS_STS) */
-typedef union
-{
-    struct
-    {
-        uint32_t : 3;
-        uint32_t iccerr : 1;                            /*!< Communication error notification bit.
-                                                             Indicates whether an invalid command has been received by the serial communication interface*/
-        uint32_t orvs : 1;                              /*!< Out-of-range VDD12V error bit */
-        uint32_t ortmp : 1;                             /*!< Out-of-range temperature error bit */
-        uint32_t pwm_dis_st : 1;                        /*!< PWM_DIS pin status */
-        uint32_t sen_rdy : 1;                           /*!< Sensor ready bit */
-    } b;                                                /*!< Structure used for bit  access */
-    uint8_t u;                                          /*!< Type used for byte access */
-} xensiv_pas_gas_status_t;
-
-#ifdef XENSIV_PAS_GAS_R290
-/** Structure of the R290 sensor's status register (SENS_STS) */
-typedef union
-{
-  struct
-  {
-    uint32_t :3;
-    uint32_t iccerr:1;                                  /*!< Communication error notification bit (R290). */
-    uint32_t orvs:1;                                    /*!< Out-of-range VDD12V error bit (R290). */
-    uint32_t ortmp:1;                                   /*!< Out-of-range temperature error bit (R290). */
-    uint32_t sen_rdy:1;                                 /*!< Sensor ready bit (R290). */
-    uint32_t :1;
-  } b;                                                  /*!< Structure used for bit  access */
-  uint8_t u;                                            /*!< Type used for byte access */
-} xensiv_pas_gas_status_t;
-#endif
-
-/** Structure of the sensor's measurement configuration register (MEAS_CFG) */
-typedef union
-{
-    struct
-    {
-        uint32_t op_mode : 2;                           /*!< @ref xensiv_pas_gas_op_mode_t */
-        uint32_t boc_cfg : 2;                           /*!< @ref xensiv_pas_gas_boc_cfg_t */
-        uint32_t pwm_mode : 1;                          /*!< @ref xensiv_pas_gas_pwm_mode_t */
-        uint32_t pwm_outen : 1;                         /*!< PWM output software enable bit */
-        uint32_t : 2;
-    } b;                                                /*!< Structure used for bit  access */
-    uint8_t u;                                          /*!< Type used for byte access */
-} xensiv_pas_gas_measurement_config_t;
-
-#ifdef XENSIV_PAS_GAS_R290
-/** Structure of the R290 sensor's measurement configuration register (MEAS_CFG) */
-typedef union
-{
-  struct
-  {
-    uint32_t op_mode:2;                                 /*!< @ref xensiv_pas_gas_op_mode_t */
-    uint32_t boc_cfg:2;                                 /*!< @ref xensiv_pas_gas_boc_cfg_t */
-  } b;                                                  /*!< Structure used for bit  access */
-  uint8_t u;                                            /*!< Type used for byte access */
-} xensiv_pas_gas_measurement_config_t;
-#endif
 
 /** Structure of the sensor's interrupt configuration register (INT_CFG) */
 typedef union
