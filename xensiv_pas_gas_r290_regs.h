@@ -26,7 +26,7 @@
 #ifndef XENSIV_PAS_GAS_R290_REGS_H_
 #define XENSIV_PAS_GAS_R290_REGS_H_
 
-//------------------- R290 Sensor Only Registers ------------------//
+// ------------------- R290 Sensor Only Registers ------------------//
 #define XENSIV_PAS_GAS_R290_DEV_ID            (0x23U)
 #define XENSIV_PAS_GAS_R290_ABOC_PREFILL      (0x5DU)
 #define XENSIV_PAS_GAS_R290_ALARM_CFG         (0x5FU)
@@ -42,7 +42,7 @@
 // ABOC_PREFILL
 #define XENSIV_GAS_R290_ABOC_PREFILL_VAL_POS      (0U)
 #define XENSIV_GAS_R290_ABOC_PREFILL_VAL_MSK      (0xffU << XENSIV_GAS_R290_ABOC_PREFILL_VAL_POS)
-// ALARM_CFG 
+// ALARM_CFG
 #define XENSIV_GAS_R290_ALARM_CFG_ALARM_POL_POS   (0U)
 #define XENSIV_GAS_R290_ALARM_CFG_ALARM_POL_MSK   (0x01U << XENSIV_GAS_R290_ALARM_CFG_ALARM_POL_POS)
 // SELF_TEST
