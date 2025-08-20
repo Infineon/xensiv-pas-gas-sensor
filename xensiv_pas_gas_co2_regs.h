@@ -26,11 +26,11 @@
 #ifndef XENSIV_PAS_GAS_CO2_REGS_H_
 #define XENSIV_PAS_GAS_CO2_REGS_H_
 
-//--------------------------SENS_STS Bitfields CO2 sensor only Register---------------------------//
+// --------------------------SENS_STS Bitfields CO2 sensor only Register---------------------------//
 #define XENSIV_PAS_GAS_CO2_REG_SENS_STS_PWM_DIS_ST_POS       (6U)                                                    /*!< SENS_STS: PWM_DIS_ST position (CO2 only) */
 #define XENSIV_PAS_GAS_CO2_REG_SENS_STS_PWM_DIS_ST_MSK       (0x01U << XENSIV_PAS_GAS_CO2_REG_SENS_STS_PWM_DIS_ST_POS)    /*!< SENS_STS: PWM_DIS_ST mask (CO2 only) */
 
-//--------------------------MEAS_CFG Bitfields CO2 sensor only Register---------------------------//
+// --------------------------MEAS_CFG Bitfields CO2 sensor only Register---------------------------//
 #define XENSIV_PAS_GAS_CO2_REG_MEAS_CFG_PWM_MODE_POS         (4U)                                                    /*!< MEAS_CFG: PWM_MODE position (CO2 only) */
 #define XENSIV_PAS_GAS_CO2_REG_MEAS_CFG_PWM_MODE_MSK         (0x01U << XENSIV_PAS_GAS_CO2_REG_MEAS_CFG_PWM_MODE_POS)      /*!< MEAS_CFG: PWM_MODE mask (CO2 only) */
 #define XENSIV_PAS_GAS_CO2_REG_MEAS_CFG_PWM_OUTEN_POS        (5U)                                                    /*!< MEAS_CFG: PWM_OUTEN position (CO2 only) */
