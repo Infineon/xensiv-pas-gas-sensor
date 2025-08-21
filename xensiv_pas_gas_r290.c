@@ -22,9 +22,6 @@
  * limitations under the License.
  **************************************************************************************************/
 #include "xensiv_pas_gas.h"
-#include "xensiv_pas_gas_r290.h"
-#include "xensiv_pas_gas_regs.h"
-#include "xensiv_pas_gas_platform.h"
 
 #define XENSIV_PAS_GAS_FCS_MEAS_RATE_S           (3)
 
