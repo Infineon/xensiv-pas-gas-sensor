@@ -27,9 +27,6 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include "xensiv_pas_gas_regs.h"
-#include "xensiv_pas_gas_platform.h"
-
 /************************************** Macros *******************************************/
 #define XENSIV_PAS_GAS_MEAS_RATE_MIN           (3U)
 

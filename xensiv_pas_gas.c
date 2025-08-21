@@ -23,7 +23,6 @@
  **************************************************************************************************/
 
 #include "xensiv_pas_gas.h"
-#include "xensiv_pas_gas_platform.h"
 
 #define XENSIV_PAS_GAS_COMM_DELAY_MS             (5U)
 #define XENSIV_PAS_GAS_COMM_TEST_VAL             (0xA5U)
