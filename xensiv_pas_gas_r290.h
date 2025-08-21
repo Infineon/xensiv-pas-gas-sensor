@@ -39,31 +39,31 @@
 /** Enum defining the different device commands */
 typedef enum
 {
-  XENSIV_PAS_GAS_CMD_SOFT_RESET = 0xA3U,               /**< Soft reset the sensor */
+    XENSIV_PAS_GAS_CMD_SOFT_RESET = 0xA3U,             /**< Soft reset the sensor */
 } xensiv_pas_gas_cmd_t;
 
 /** Structure of the R290 sensor's status register (SENS_STS) */
 typedef union
 {
-  struct
-  {
-    uint32_t :3;
-    uint32_t iccerr:1;                                  /*!< Communication error notification bit (R290). */
-    uint32_t orvs:1;                                    /*!< Out-of-range VDD12V error bit (R290). */
-    uint32_t ortmp:1;                                   /*!< Out-of-range temperature error bit (R290). */
-    uint32_t sen_rdy:1;                                 /*!< Sensor ready bit (R290). */
-    uint32_t :1;
-  } b;                                                  /*!< Structure used for bit  access */
-  uint8_t u;                                            /*!< Type used for byte access */
+    struct
+    {
+        uint32_t : 3;
+        uint32_t iccerr : 1;                            /*!< Communication error notification bit (R290). */
+        uint32_t orvs : 1;                              /*!< Out-of-range VDD12V error bit (R290). */
+        uint32_t ortmp : 1;                             /*!< Out-of-range temperature error bit (R290). */
+        uint32_t sen_rdy : 1;                           /*!< Sensor ready bit (R290). */
+        uint32_t : 1;
+    } b;                                                /*!< Structure used for bit  access */
+    uint8_t u;                                          /*!< Type used for byte access */
 } xensiv_pas_gas_status_t;
 
 /** Structure of the R290 sensor's measurement configuration register (MEAS_CFG) */
 typedef union
 {
-  struct
-  {
-    uint32_t op_mode:2;                                 /*!< @ref xensiv_pas_gas_op_mode_t */
-    uint32_t boc_cfg:2;                                 /*!< @ref xensiv_pas_gas_boc_cfg_t */
-  } b;                                                  /*!< Structure used for bit  access */
-  uint8_t u;                                            /*!< Type used for byte access */
+    struct
+    {
+        uint32_t op_mode : 2;                           /*!< @ref xensiv_pas_gas_op_mode_t */
+        uint32_t boc_cfg : 2;                           /*!< @ref xensiv_pas_gas_boc_cfg_t */
+    } b;                                                /*!< Structure used for bit  access */
+    uint8_t u;                                          /*!< Type used for byte access */
 } xensiv_pas_gas_measurement_config_t;

@@ -37,10 +37,10 @@
 /** Enum defining the different device commands */
 typedef enum
 {
-  XENSIV_PAS_GAS_CMD_SOFT_RESET = 0xA3U,               /**< Soft reset the sensor */
-  XENSIV_PAS_GAS_CMD_RESET_ABOC = 0xBCU,               /**< Resets the ABOC context */
-  XENSIV_PAS_GAS_CMD_SAVE_FCS_CALIB_OFFSET = 0xCFU,    /**< Saves the force calibration offset into the non volatile memory */
-  XENSIV_PAS_GAS_CMD_RESET_FCS = 0xFCU,                /**< Resets the forced calibration correction factor */
+    XENSIV_PAS_GAS_CMD_SOFT_RESET = 0xA3U,             /**< Soft reset the sensor */
+    XENSIV_PAS_GAS_CMD_RESET_ABOC = 0xBCU,             /**< Resets the ABOC context */
+    XENSIV_PAS_GAS_CMD_SAVE_FCS_CALIB_OFFSET = 0xCFU,  /**< Saves the force calibration offset into the non volatile memory */
+    XENSIV_PAS_GAS_CMD_RESET_FCS = 0xFCU,              /**< Resets the forced calibration correction factor */
 } xensiv_pas_gas_cmd_t;
 
 /** Enum defining the PWM mode configuration */
@@ -53,29 +53,29 @@ typedef enum
 /** Structure of the sensor's status register (SENS_STS) */
 typedef union
 {
-  struct
-  {
-    uint32_t :3;
-    uint32_t iccerr:1;                                  /*!< Communication error notification bit.
+    struct
+    {
+        uint32_t : 3;
+        uint32_t iccerr : 1;                            /*!< Communication error notification bit.
                                                              Indicates whether an invalid command has been received by the serial communication interface*/
-    uint32_t orvs:1;                                    /*!< Out-of-range VDD12V error bit */
-    uint32_t ortmp:1;                                   /*!< Out-of-range temperature error bit */
-    uint32_t pwm_dis_st:1;                              /*!< PWM_DIS pin status */
-    uint32_t sen_rdy:1;                                 /*!< Sensor ready bit */
-  } b;                                                  /*!< Structure used for bit  access */
-  uint8_t u;                                            /*!< Type used for byte access */
+        uint32_t orvs : 1;                              /*!< Out-of-range VDD12V error bit */
+        uint32_t ortmp : 1;                             /*!< Out-of-range temperature error bit */
+        uint32_t pwm_dis_st : 1;                        /*!< PWM_DIS pin status */
+        uint32_t sen_rdy : 1;                           /*!< Sensor ready bit */
+    } b;                                                /*!< Structure used for bit  access */
+    uint8_t u;                                          /*!< Type used for byte access */
 } xensiv_pas_gas_status_t;
 
 /** Structure of the sensor's measurement configuration register (MEAS_CFG) */
 typedef union
 {
-  struct
-  {
-    uint32_t op_mode:2;                                 /*!< @ref xensiv_pas_gas_op_mode_t */
-    uint32_t boc_cfg:2;                                 /*!< @ref xensiv_pas_gas_boc_cfg_t */
-    uint32_t pwm_mode:1;                                /*!< @ref xensiv_pas_gas_pwm_mode_t */
-    uint32_t pwm_outen:1;                               /*!< PWM output software enable bit */
-    uint32_t :2;
-  } b;                                                  /*!< Structure used for bit  access */
-  uint8_t u;                                            /*!< Type used for byte access */
+    struct
+    {
+        uint32_t op_mode : 2;                           /*!< @ref xensiv_pas_gas_op_mode_t */
+        uint32_t boc_cfg : 2;                           /*!< @ref xensiv_pas_gas_boc_cfg_t */
+        uint32_t pwm_mode : 1;                          /*!< @ref xensiv_pas_gas_pwm_mode_t */
+        uint32_t pwm_outen : 1;                         /*!< PWM output software enable bit */
+        uint32_t : 2;
+    } b;                                                /*!< Structure used for bit  access */
+    uint8_t u;                                          /*!< Type used for byte access */
 } xensiv_pas_gas_measurement_config_t;
