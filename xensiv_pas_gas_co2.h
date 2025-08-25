@@ -27,25 +27,25 @@
 #include <stddef.h>
 
 /** Minimum allowed measurement rate */
-#define XENSIV_PAS_GAS_MEAS_RATE_MIN            (5U)
+#define XENSIV_PAS_GAS_CO2_MEAS_RATE_MIN            (5U)
 
 /********************************* Type definitions **************************************/
 
 /** Enum defining the different device commands */
 typedef enum
 {
-    XENSIV_PAS_GAS_CMD_SOFT_RESET = 0xA3U,             /**< Soft reset the sensor */
-    XENSIV_PAS_GAS_CMD_RESET_ABOC = 0xBCU,             /**< Resets the ABOC context */
-    XENSIV_PAS_GAS_CMD_SAVE_FCS_CALIB_OFFSET = 0xCFU,  /**< Saves the force calibration offset into the non volatile memory */
-    XENSIV_PAS_GAS_CMD_RESET_FCS = 0xFCU,              /**< Resets the forced calibration correction factor */
-} xensiv_pas_gas_cmd_t;
+    XENSIV_PAS_GAS_CO2_CMD_SOFT_RESET = 0xA3U,             /**< Soft reset the sensor */
+    XENSIV_PAS_GAS_CO2_CMD_RESET_ABOC = 0xBCU,             /**< Resets the ABOC context */
+    XENSIV_PAS_GAS_CO2_CMD_SAVE_FCS_CALIB_OFFSET = 0xCFU,  /**< Saves the force calibration offset into the non volatile memory */
+    XENSIV_PAS_GAS_CO2_CMD_RESET_FCS = 0xFCU,              /**< Resets the forced calibration correction factor */
+} xensiv_pas_gas_co2_cmd_t;
 
 /** Enum defining the PWM mode configuration */
 typedef enum
 {
-    XENSIV_PAS_GAS_PWM_MODE_SINGLE_PULSE = 0U,           /**< PWM single-pulse */
-    XENSIV_PAS_GAS_PWM_MODE_TRAIN_PULSE = 1U             /**< PWM pulse-train mode */
-} xensiv_pas_gas_pwm_mode_t;
+    XENSIV_PAS_GAS_CO2_PWM_MODE_SINGLE_PULSE = 0U,           /**< PWM single-pulse */
+    XENSIV_PAS_GAS_CO2_PWM_MODE_TRAIN_PULSE = 1U             /**< PWM pulse-train mode */
+} xensiv_pas_gas_co2_pwm_mode_t;
 
 /** Structure of the sensor's status register (SENS_STS) */
 typedef union
@@ -61,7 +61,7 @@ typedef union
         uint32_t sen_rdy : 1;                           /*!< Sensor ready bit */
     } b;                                                /*!< Structure used for bit  access */
     uint8_t u;                                          /*!< Type used for byte access */
-} xensiv_pas_gas_status_t;
+} xensiv_pas_gas_co2_status_t;
 
 /** Structure of the sensor's measurement configuration register (MEAS_CFG) */
 typedef union
@@ -75,4 +75,4 @@ typedef union
         uint32_t : 2;
     } b;                                                /*!< Structure used for bit  access */
     uint8_t u;                                          /*!< Type used for byte access */
-} xensiv_pas_gas_measurement_config_t;
+} xensiv_pas_gas_co2_measurement_config_t;
