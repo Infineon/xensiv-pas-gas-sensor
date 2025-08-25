@@ -28,7 +28,7 @@
 #include <stddef.h>
 
 /************************************** Macros *******************************************/
-#define XENSIV_PAS_GAS_MEAS_RATE_MIN           (3U)
+#define XENSIV_PAS_GAS_R290_MEAS_RATE_MIN            (3U)
 
 
 /********************************* Type definitions **************************************/
@@ -36,8 +36,8 @@
 /** Enum defining the different device commands */
 typedef enum
 {
-    XENSIV_PAS_GAS_CMD_SOFT_RESET = 0xA3U,             /**< Soft reset the sensor */
-} xensiv_pas_gas_cmd_t;
+    XENSIV_PAS_GAS_R290_CMD_SOFT_RESET = 0xA3U,             /**< Soft reset the sensor */
+} xensiv_pas_gas_r290_cmd_t;
 
 /** Structure of the R290 sensor's status register (SENS_STS) */
 typedef union
@@ -52,7 +52,7 @@ typedef union
         uint32_t : 1;
     } b;                                                /*!< Structure used for bit  access */
     uint8_t u;                                          /*!< Type used for byte access */
-} xensiv_pas_gas_status_t;
+} xensiv_pas_gas_r290_status_t;
 
 /** Structure of the R290 sensor's measurement configuration register (MEAS_CFG) */
 typedef union
@@ -63,4 +63,4 @@ typedef union
         uint32_t boc_cfg : 2;                           /*!< @ref xensiv_pas_gas_boc_cfg_t */
     } b;                                                /*!< Structure used for bit  access */
     uint8_t u;                                          /*!< Type used for byte access */
-} xensiv_pas_gas_measurement_config_t;
+} xensiv_pas_gas_r290_measurement_config_t;
