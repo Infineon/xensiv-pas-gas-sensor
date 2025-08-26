@@ -65,6 +65,18 @@ typedef union
     } b;
     uint8_t u;                    /*!< Type used for byte access */
 } xensiv_pas_gas_r290_alarm_config_t;
+
+/** Structure of the R290 sensor's aboc cycle configuration ( ABOC_CYCLE) */
+typedef union {
+    struct
+    {
+        uint32_t aboc_cycle : 7; /*!< ABOC cycle in days (bits 0 - 6) */
+        uint32_t : 1;           /*!< Reserved bit (bit 7, always 0) */
+    } b;
+    uint8_t u;                    /*!< Type used for byte access */
+} xensiv_pas_gas_r290_aboc_cycle_config_t;
+
+
 /**
  * @brief Initializes the XENSIV™ PAS GAS R290 device.
  * It initializes the dev structure, verifies the integrity of the communication layer of the serial communication interface, and checks whether the sensor is ready
@@ -113,3 +125,22 @@ int32_t xensiv_pas_gas_r290_set_alarm_config(const xensiv_pas_gas_t *dev, xensiv
  * @return XENSIV_PAS_GAS_OK if the read was successful; an error indicating what went wrong otherwise
  */
 int32_t xensiv_pas_gas_r290_get_alarm_config(const xensiv_pas_gas_t *dev, xensiv_pas_gas_r290_alarm_config_t *alarm_config);
+
+/**
+ * @brief Configures the ABOC cycle.
+ *
+ * @param[in] dev Pointer to a XENSIV™ PAS GAS R290 sensor device structure
+ * @param[in] aboc_cycle New ABOC cycle configuration
+ * @return XENSIV_PAS_GAS_OK if the configuration was successful; an error indicating what went wrong otherwise
+ */
+int32_t xensiv_pas_gas_r290_set_aboc_cycle(const xensiv_pas_gas_t *dev, xensiv_pas_gas_r290_aboc_cycle_config_t aboc_cycle);
+
+/**
+ * @brief Reads the ABOC cycle configuration.
+ *
+ * @param[in] dev Pointer to a XENSIV™ PAS GAS R290 sensor device structure
+ * @param[out] aboc_cycle Pointer to a structure to store the ABOC cycle configuration
+ * @return XENSIV_PAS_GAS_OK if the read was successful; an error indicating what went wrong otherwise
+ */
+
+int32_t xensiv_pas_gas_r290_get_aboc_cycle(const xensiv_pas_gas_t *dev, xensiv_pas_gas_r290_aboc_cycle_config_t *aboc_cycle);
