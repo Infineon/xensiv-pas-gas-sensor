@@ -75,3 +75,13 @@ int32_t xensiv_pas_gas_r290_init(xensiv_pas_gas_t *dev, xensiv_pas_gas_interface
  * @return XENSIV_PAS_GAS_OK if the read was successful; an error indicating what went wrong otherwise
  */
 int32_t xensiv_pas_gas_r290_get_device_id(const xensiv_pas_gas_t *dev, void *dev_id);
+
+/**
+ * @brief Configures the ABOC prefill value.
+ *
+ * @param[in] dev Pointer to a XENSIV™ PAS GAS R290 sensor device structure
+ * @param[in] prefill The number of hours to prefill the flash table from 0 to the maximum hours value.The maximum hours value is the ABOC cycle minus one hour.
+  * For example, if the ABOC cycle is set to 10 hours, the maximum prefill value is 9 hours.
+ * @return XENSIV_PAS_GAS_OK if the configuration was successful; an error indicating what went wrong otherwise
+ */
+int32_t xensiv_pas_gas_r290_aboc_prefill(const xensiv_pas_gas_t *dev, uint8_t prefill);
