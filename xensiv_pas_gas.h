@@ -31,8 +31,6 @@
 
 #include "xensiv_pas_gas_regs.h"
 #include "xensiv_pas_gas_platform.h"
-#include "xensiv_pas_gas_r290.h"
-#include "xensiv_pas_gas_co2.h"
 
 /**
  * \addtogroup group_board_libs XENSIV™ PAS GAS sensor
@@ -68,6 +66,9 @@
 /** Result code indicating that a new GAS value is not yet ready */
 #define XENSIV_PAS_GAS_READ_NRDY                 (7)
 
+/** Minimum allowed measurement rate */
+#define XENSIV_PAS_GAS_MEAS_RATE_MIN             (5U)
+
 /** Maximum allowed measurement rate */
 #define XENSIV_PAS_GAS_MEAS_RATE_MAX             (4095U)
 
@@ -75,6 +76,13 @@
 #define XENSIV_PAS_GAS_I2C_ADDR                  (0x28U)
 
 /********************************* Type definitions **************************************/
+
+/** Enum defining the different comm. interfaces */
+typedef enum
+{
+    XENSIV_PAS_GAS_INTERFACE_I2C = 0U,                  /**< I2C interface */
+    XENSIV_PAS_GAS_INTERFACE_UART = 1U                  /**< UART interface */
+} xensiv_pas_gas_interface_t;
 
 /** Enum defining the different device commands */
 typedef enum
@@ -136,6 +144,33 @@ typedef union
     uint8_t u;                                          /*!< Type used for byte access */
 } xensiv_pas_gas_id_t;
 
+/** Structure of the sensor's status register (SENS_STS) */
+typedef union
+{
+    struct
+    {
+        uint32_t : 3;
+        uint32_t iccerr : 1;                            /*!< Communication error notification bit.
+                                                             Indicates whether an invalid command has been received by the serial communication interface*/
+        uint32_t orvs : 1;                              /*!< Out-of-range VDD12V error bit */
+        uint32_t ortmp : 1;                             /*!< Out-of-range temperature error bit */
+        uint32_t : 2;                                   /*!< Reserved (usage depends on variant) */
+    } b;                                                /*!< Structure used for bit  access */
+    uint8_t u;                                          /*!< Type used for byte access */
+} xensiv_pas_gas_status_t;
+
+/** Structure of the sensor's measurement configuration register (MEAS_CFG) */
+typedef union
+{
+    struct
+    {
+        uint32_t op_mode : 2;                           /*!< @ref xensiv_pas_gas_op_mode_t */
+        uint32_t boc_cfg : 2;                           /*!< @ref xensiv_pas_gas_boc_cfg_t */
+        uint32_t : 4;
+    } b;                                                /*!< Structure used for bit  access */
+    uint8_t u;                                          /*!< Type used for byte access */
+} xensiv_pas_gas_measurement_config_t;
+
 /** Structure of the sensor's interrupt configuration register (INT_CFG) */
 typedef union
 {
@@ -165,6 +200,9 @@ typedef union
 
 struct xensiv_pas_gas_s;                                   /* Forward declaration */
 
+/* Function pointer to the platform-specific forced compensation function */
+typedef int32_t (*xensiv_pas_gas_fcs_fptr_t)(const struct xensiv_pas_gas_s *dev, uint16_t gas_ref);
+
 /* Function pointer to the platform-specific function for reading the sensor registers via I2C/UART */
 typedef int32_t (*xensiv_pas_gas_read_fptr_t)(const struct xensiv_pas_gas_s *dev, uint8_t reg_addr, uint8_t *data, uint8_t len);
 
@@ -174,16 +212,14 @@ typedef int32_t (*xensiv_pas_gas_write_fptr_t)(const struct xensiv_pas_gas_s *de
 /** Structure of the XENSIV™ PAS GAS sensor device. Initialized using \ref xensiv_pas_gas_init_i2c or \ref xensiv_pas_gas_init_uart */
 typedef struct xensiv_pas_gas_s
 {
-    void *ctx;                          /*!< Context for I2C/UART platform-specific read and write functions */
+    uint8_t meas_rate_min;                  /*!< Minimum measurement rate in seconds */
+    uint8_t fcs_meas_rate_s;                /*!< Measurement rate in seconds required for forced calibration */
+    xensiv_pas_gas_fcs_fptr_t force_comp;   /*!< Pointer to the perform forced compensation function */
+
+    void *ctx;                           /*!< Context for I2C/UART platform-specific read and write functions */
     xensiv_pas_gas_read_fptr_t read;     /*!< Pointer to the register read function which depends on the communication interface used */
     xensiv_pas_gas_write_fptr_t write;   /*!< Pointer to the register write function which depends on the communication interface used */
 
-    int32_t (*cmd)(const struct xensiv_pas_gas_s *dev, void *cmd);
-    int32_t (*status)(const struct xensiv_pas_gas_s *dev, void *status);
-    int32_t (*measurement_config)(const struct xensiv_pas_gas_s *dev, void *meas_config);
-    int32_t (*start_single_mode)(const struct xensiv_pas_gas_s *dev);
-    int32_t (*start_continuous_mode)(const struct xensiv_pas_gas_s *dev, uint16_t val);
-    int32_t (*set_measurement_rate)(const struct xensiv_pas_gas_s *dev, uint16_t val);
 } xensiv_pas_gas_t;
 
 /******************************* Function prototypes *************************************/
@@ -193,26 +229,16 @@ extern "C" {
 #endif
 
 /**
- * @brief Initializes the XENSIV™ PAS GAS device using the I2C interface.
- * It initializes the dev structure, verifies the integrity of the communication layer of the serial communication interface, and checks whether the sensor is ready
- *
- * @param[in out] dev Pointer to a XENSIV™ PAS GAS sensor device structure allocated by the user,
- * but the init function will initialize its contents
- * @param[in] ctx Pointer to the platform-specific I2C communication handler
- * @return XENSIV_PAS_GAS_OK if the initialization was successful; an error indicating what went wrong otherwise
- */
-int32_t xensiv_pas_gas_init_i2c(xensiv_pas_gas_t *dev, void *ctx);
-
-/**
- * @brief Initializes the XENSIV™ PAS GAS device using the UART interface.
+ * @brief Initializes the XENSIV™ PAS GAS device for the specified interface.
  * It initializes the dev structure, verifies the integrity of the communication layer of the serial communication interface, and checks whether the sensor is ready
  *
  * @param[in out] dev Pointer to a XENSIV™ PAS GAS sensor device structure allocated by user,
  * but the init function will initialize its contents
+ * @param[in] itf Communication interface (I2C/UART)
  * @param[in] ctx Pointer to the platform-specific I2C communication handler
  * @return XENSIV_PAS_GAS_OK if the initialization was successful; an error indicating what went wrong otherwise
  */
-int32_t xensiv_pas_gas_init_uart(xensiv_pas_gas_t *dev, void *ctx);
+int32_t xensiv_pas_gas_init(xensiv_pas_gas_t *dev, xensiv_pas_gas_interface_t itf, void *ctx);
 
 /**
  * @brief Writes the given data buffer into the sensor device.
@@ -255,7 +281,7 @@ int32_t xensiv_pas_gas_get_id(const xensiv_pas_gas_t *dev, xensiv_pas_gas_id_t *
  * @param[out] status Pointer to populate with the sensor device status
  * @return XENSIV_PAS_GAS_OK if reading the device status was successful; an error indicating what went wrong otherwise
  */
-int32_t xensiv_pas_gas_get_status(const xensiv_pas_gas_t *dev, void *status);
+int32_t xensiv_pas_gas_get_status(const xensiv_pas_gas_t *dev, xensiv_pas_gas_status_t *status);
 
 /**
  * @brief Clears the sensor device status bits
@@ -294,7 +320,7 @@ int32_t xensiv_pas_gas_set_interrupt_config(const xensiv_pas_gas_t *dev, xensiv_
  * @param[out] meas_config Pointer to populate with the sensor device measurement configuration
  * @return XENSIV_PAS_GAS_OK if getting the measurement configuration was successful; an error indicating what went wrong otherwise
  */
-int32_t xensiv_pas_gas_get_measurement_config(const xensiv_pas_gas_t *dev, void *meas_config);
+int32_t xensiv_pas_gas_get_measurement_config(const xensiv_pas_gas_t *dev, xensiv_pas_gas_measurement_config_t *meas_config);
 
 /**
  * @brief Sets the sensor device measurement configuration
@@ -303,7 +329,7 @@ int32_t xensiv_pas_gas_get_measurement_config(const xensiv_pas_gas_t *dev, void 
  * @param[in] meas_config New sensor device measurement configuration to apply
  * @return XENSIV_PAS_GAS_OK if setting the measurement configuration was successful; an error indicating what went wrong otherwise
  */
-int32_t xensiv_pas_gas_set_measurement_config(const xensiv_pas_gas_t *dev, void *meas_config);
+int32_t xensiv_pas_gas_set_measurement_config(const xensiv_pas_gas_t *dev, xensiv_pas_gas_measurement_config_t meas_config);
 
 /**
  * @brief Gets the current GAS ppm values from the sensor device
@@ -404,7 +430,7 @@ int32_t xensiv_pas_gas_get_scratch_pad(const xensiv_pas_gas_t *dev, uint8_t *val
  * @param[in] cmd Command to trigger
  * @return XENSIV_PAS_GAS_OK if triggering the command  was successful; an error indicating what went wrong otherwise
  */
-int32_t xensiv_pas_gas_cmd(const xensiv_pas_gas_t *dev, void *cmd);
+int32_t xensiv_pas_gas_cmd(const xensiv_pas_gas_t *dev, xensiv_pas_gas_cmd_t cmd);
 
 /**
  * @brief Triggers a single mode measurement
