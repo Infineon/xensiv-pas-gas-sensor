@@ -66,3 +66,12 @@ typedef union
  * @return XENSIV_PAS_GAS_OK if the initialization was successful; an error indicating what went wrong otherwise
  */
 int32_t xensiv_pas_gas_r290_init(xensiv_pas_gas_t *dev, xensiv_pas_gas_interface_t itf, void *ctx);
+
+/**
+ * @brief Reads the device ID of the XENSIV™ PAS GAS R290 sensor.
+ *
+ * @param[in] dev Pointer to a XENSIV™ PAS GAS R290 sensor device structure
+ * @param[out] dev_id Pointer to a buffer to store the device ID
+ * @return XENSIV_PAS_GAS_OK if the read was successful; an error indicating what went wrong otherwise
+ */
+int32_t xensiv_pas_gas_r290_get_device_id(const xensiv_pas_gas_t *dev, void *dev_id);
