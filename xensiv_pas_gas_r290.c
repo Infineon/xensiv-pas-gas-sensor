@@ -42,6 +42,19 @@ int32_t xensiv_pas_gas_r290_aboc_prefill(const xensiv_pas_gas_t *dev, uint8_t pr
     return xensiv_pas_gas_set_reg(dev, (uint8_t)XENSIV_PAS_GAS_R290_REG_ABOC_PREFILL, (uint8_t *)&prefill, 1U);
 }
 
+int32_t xensiv_pas_gas_r290_set_alarm_config(const xensiv_pas_gas_t *dev, xensiv_pas_gas_r290_alarm_config_t alarm_config) {
+    xensiv_pas_gas_plat_assert(dev != NULL);
+
+    return xensiv_pas_gas_set_reg(dev, (uint8_t)XENSIV_PAS_GAS_R290_REG_ALARM_CFG, &alarm_config.u, 1U);
+}
+
+int32_t xensiv_pas_gas_r290_get_alarm_config(const xensiv_pas_gas_t *dev, xensiv_pas_gas_r290_alarm_config_t *alarm_config) {
+    xensiv_pas_gas_plat_assert(dev != NULL);
+    xensiv_pas_gas_plat_assert(alarm_config != NULL);
+
+    return xensiv_pas_gas_get_reg(dev, (uint8_t)XENSIV_PAS_GAS_R290_REG_ALARM_CFG, &(alarm_config->u), 1U);
+}
+
 int32_t xensiv_pas_gas_r290_init(xensiv_pas_gas_t *dev, xensiv_pas_gas_interface_t itf, void *ctx) {
     xensiv_pas_gas_plat_assert(dev != NULL);
     xensiv_pas_gas_plat_assert(ctx != NULL);
