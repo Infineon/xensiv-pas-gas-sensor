@@ -21,110 +21,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **************************************************************************************************/
-#include "xensiv_pas_gas.h"
+#include "xensiv_pas_gas_r290.h"
 
-#define XENSIV_PAS_GAS_FCS_MEAS_RATE_S           (3)
+#define XENSIV_PAS_GAS_R290_FCS_MEAS_RATE_S           (3)
 
-int32_t xensiv_pas_gas_r290_cmd(const xensiv_pas_gas_t *dev, void *cmd) {
-    xensiv_pas_gas_r290_cmd_t r290_cmd = *(xensiv_pas_gas_r290_cmd_t *)cmd;
+/** Usage of the default functionalities from base class */
+extern int32_t xensiv_pas_gas_base_init(xensiv_pas_gas_t *dev, xensiv_pas_gas_interface_t itf, void *ctx);
+extern int32_t xensiv_pas_gas_base_perform_forced_compensation(const xensiv_pas_gas_t *dev, uint16_t gas_ref);
+
+int32_t xensiv_pas_gas_r290_init(xensiv_pas_gas_t *dev, xensiv_pas_gas_interface_t itf, void *ctx) {
     xensiv_pas_gas_plat_assert(dev != NULL);
+    xensiv_pas_gas_plat_assert(ctx != NULL);
 
-    return xensiv_pas_gas_set_reg(dev, (uint8_t)XENSIV_PAS_GAS_REG_SENS_RST, (const uint8_t *)&r290_cmd, 1U);
-}
+    dev->fcs_meas_rate_s = XENSIV_PAS_GAS_R290_FCS_MEAS_RATE_S;
+    dev->meas_rate_min = XENSIV_PAS_GAS_R290_MEAS_RATE_MIN;
+    dev->force_comp = xensiv_pas_gas_base_perform_forced_compensation;
 
-int32_t xensiv_pas_gas_r290_start_single_mode(const xensiv_pas_gas_t *dev) {
-    xensiv_pas_gas_plat_assert(dev != NULL);
-
-    xensiv_pas_gas_r290_measurement_config_t meas_config;
-    int32_t res = xensiv_pas_gas_get_measurement_config(dev, &meas_config);
-
-    if (XENSIV_PAS_GAS_OK == res) {
-        if (meas_config.b.op_mode != XENSIV_PAS_GAS_OP_MODE_IDLE) {
-            meas_config.b.op_mode = XENSIV_PAS_GAS_OP_MODE_IDLE;
-            res = xensiv_pas_gas_set_measurement_config(dev, &meas_config);
-        }
-    }
-
-    if (XENSIV_PAS_GAS_OK == res) {
-        meas_config.b.op_mode = XENSIV_PAS_GAS_OP_MODE_SINGLE;
-        meas_config.b.boc_cfg = XENSIV_PAS_GAS_BOC_CFG_AUTOMATIC;
-        res = xensiv_pas_gas_set_measurement_config(dev, &meas_config);
-    }
-
-    return res;
-}
-
-int32_t xensiv_pas_gas_r290_start_continuous_mode(const xensiv_pas_gas_t *dev, uint16_t val) {
-    xensiv_pas_gas_plat_assert(dev != NULL);
-    xensiv_pas_gas_plat_assert((val >= XENSIV_PAS_GAS_R290_MEAS_RATE_MIN) && (val <= XENSIV_PAS_GAS_MEAS_RATE_MAX));
-
-    xensiv_pas_gas_r290_measurement_config_t meas_config;
-    int32_t res = xensiv_pas_gas_get_measurement_config(dev, &meas_config);
-
-    if (XENSIV_PAS_GAS_OK == res) {
-        if (meas_config.b.op_mode != XENSIV_PAS_GAS_OP_MODE_IDLE) {
-            meas_config.b.op_mode = XENSIV_PAS_GAS_OP_MODE_IDLE;
-            res = xensiv_pas_gas_set_measurement_config(dev, &meas_config);
-        }
-    }
-
-    if (XENSIV_PAS_GAS_OK == res) {
-        val = xensiv_pas_gas_plat_htons(val);
-        res = xensiv_pas_gas_set_reg(dev, (uint8_t)XENSIV_PAS_GAS_REG_MEAS_RATE_H, (uint8_t *)&val, 2U);
-    }
-
-    if (XENSIV_PAS_GAS_OK == res) {
-        meas_config.b.op_mode = XENSIV_PAS_GAS_OP_MODE_CONTINUOUS;
-        meas_config.b.boc_cfg = XENSIV_PAS_GAS_BOC_CFG_AUTOMATIC;
-        res = xensiv_pas_gas_set_measurement_config(dev, &meas_config);
-    }
-    return res;
-}
-
-int32_t xensiv_pas_gas_r290_set_measurement_rate(const xensiv_pas_gas_t *dev, uint16_t val) {
-    xensiv_pas_gas_plat_assert(dev != NULL);
-    xensiv_pas_gas_plat_assert((val >= XENSIV_PAS_GAS_CO2_MEAS_RATE_MIN) && (val <= XENSIV_PAS_GAS_MEAS_RATE_MAX));
-
-    val = xensiv_pas_gas_plat_htons(val);
-    return xensiv_pas_gas_set_reg(dev, (uint8_t)XENSIV_PAS_GAS_REG_MEAS_RATE_H, (uint8_t *)&val, 2U);
-}
-
-int32_t xensiv_pas_gas_r290_perform_forced_compensation(const xensiv_pas_gas_t *dev, uint16_t gas_ref) {
-    xensiv_pas_gas_plat_assert(dev != NULL);
-
-    xensiv_pas_gas_r290_measurement_config_t meas_config;
-    int32_t res = xensiv_pas_gas_get_measurement_config(dev, &meas_config);
-
-    if (XENSIV_PAS_GAS_OK == res) {
-        meas_config.b.op_mode = XENSIV_PAS_GAS_OP_MODE_IDLE;
-        res = xensiv_pas_gas_set_measurement_config(dev, &meas_config);
-    }
-
-    if (XENSIV_PAS_GAS_OK == res) {
-        res = xensiv_pas_gas_r290_set_measurement_rate(dev, XENSIV_PAS_GAS_FCS_MEAS_RATE_S);
-    }
-
-    if (XENSIV_PAS_GAS_OK == res) {
-        res = xensiv_pas_gas_set_offset_compensation(dev, gas_ref);
-    }
-
-    if (XENSIV_PAS_GAS_OK == res) {
-        meas_config.b.op_mode = XENSIV_PAS_GAS_OP_MODE_CONTINUOUS;
-        meas_config.b.boc_cfg = XENSIV_PAS_GAS_BOC_CFG_FORCED;
-        res = xensiv_pas_gas_set_measurement_config(dev, &meas_config);
-    }
-
-    if (XENSIV_PAS_GAS_OK == res) {
-        /* wait until the FCS is finished */
-        do
-        {
-            res = xensiv_pas_gas_get_measurement_config(dev, &meas_config);
-        } while ((XENSIV_PAS_GAS_OK != res) || (XENSIV_PAS_GAS_BOC_CFG_FORCED == meas_config.b.boc_cfg));
-    }
-
-    if (XENSIV_PAS_GAS_OK == res) {
-        meas_config.b.op_mode = XENSIV_PAS_GAS_OP_MODE_IDLE;
-        res = xensiv_pas_gas_set_measurement_config(dev, &meas_config);
-    }
-    return res;
+    return xensiv_pas_gas_base_init(dev, itf, ctx);
 }
