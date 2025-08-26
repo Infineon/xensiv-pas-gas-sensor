@@ -26,22 +26,23 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include "xensiv_pas_gas.h"
 
 /************************************** Macros *******************************************/
 #define XENSIV_PAS_GAS_R290_MEAS_RATE_MIN            (3U)
-
 
 /********************************* Type definitions **************************************/
 
 /** Enum defining the different device commands */
 typedef enum
 {
-    XENSIV_PAS_GAS_R290_CMD_SOFT_RESET = 0xA3U,             /**< Soft reset the sensor */
+    XENSIV_PAS_GAS_R290_CMD_SOFT_RESET = 0xA3U,         /**< Soft reset the sensor */
 } xensiv_pas_gas_r290_cmd_t;
 
 /** Structure of the R290 sensor's status register (SENS_STS) */
 typedef union
 {
+    xensiv_pas_gas_status_t base;                       /*<! Base status structure */
     struct
     {
         uint32_t : 3;
@@ -57,10 +58,23 @@ typedef union
 /** Structure of the R290 sensor's measurement configuration register (MEAS_CFG) */
 typedef union
 {
+    xensiv_pas_gas_measurement_config_t base;           /*<! Base measurement configuration structure */
     struct
     {
         uint32_t op_mode : 2;                           /*!< @ref xensiv_pas_gas_op_mode_t */
         uint32_t boc_cfg : 2;                           /*!< @ref xensiv_pas_gas_boc_cfg_t */
-    } b;                                                /*!< Structure used for bit  access */
+    } b;                                                /*!< Structure used for bit access */
     uint8_t u;                                          /*!< Type used for byte access */
 } xensiv_pas_gas_r290_measurement_config_t;
+
+/**
+ * @brief Initializes the XENSIV™ PAS GAS R290 device.
+ * It initializes the dev structure, verifies the integrity of the communication layer of the serial communication interface, and checks whether the sensor is ready
+ *
+ * @param[in out] dev Pointer to a XENSIV™ PAS GAS R290 sensor device structure allocated by the user,
+ * but the init function will initialize its contents
+ * @param[in] itf Communication interface (I2C/UART)
+ * @param[in] ctx Pointer to the platform-specific specific protocol communication handler
+ * @return XENSIV_PAS_GAS_OK if the initialization was successful; an error indicating what went wrong otherwise
+ */
+int32_t xensiv_pas_gas_r290_init(xensiv_pas_gas_t *dev, xensiv_pas_gas_interface_t itf, void *ctx);

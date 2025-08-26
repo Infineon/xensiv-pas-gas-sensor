@@ -29,6 +29,8 @@
 
 #define XENSIV_PAS_GAS_SOFT_RESET_DELAY_MS       (2000U)
 
+#define XENSIV_PAS_GAS_FCS_MEAS_RATE_S           (10)
+
 #define XENSIV_PAS_GAS_I2C_WRITE_BUFFER_LEN      (17U)
 #define XENSIV_PAS_GAS_UART_WRITE_XFER_BUF_SIZE  (8U)
 #define XENSIV_PAS_GAS_UART_READ_XFER_BUF_SIZE   (5U)
@@ -169,8 +171,18 @@ static int32_t xensiv_pas_gas_uart_write(const xensiv_pas_gas_t *dev, uint8_t re
     return res;
 }
 
-static int32_t xensiv_pas_gas_init(const xensiv_pas_gas_t *dev) {
+int32_t xensiv_pas_gas_base_init(xensiv_pas_gas_t *dev, xensiv_pas_gas_interface_t itf, void *ctx) {
     xensiv_pas_gas_plat_assert(dev != NULL);
+    xensiv_pas_gas_plat_assert(ctx != NULL);
+
+    dev->ctx = ctx;
+    if (itf == XENSIV_PAS_GAS_INTERFACE_I2C) {
+        dev->read = xensiv_pas_gas_i2c_read;
+        dev->write = xensiv_pas_gas_i2c_write;
+    } else if (itf == XENSIV_PAS_GAS_INTERFACE_UART) {
+        dev->read = xensiv_pas_gas_uart_read;
+        dev->write = xensiv_pas_gas_uart_write;
+    }
 
     /* Check communication */
     uint8_t data = XENSIV_PAS_GAS_COMM_TEST_VAL;
@@ -183,7 +195,7 @@ static int32_t xensiv_pas_gas_init(const xensiv_pas_gas_t *dev) {
 
     if ((XENSIV_PAS_GAS_OK == res) && (XENSIV_PAS_GAS_COMM_TEST_VAL == data)) {
         /* Soft reset */
-        res = xensiv_pas_gas_cmd(dev, (void *)(uintptr_t)XENSIV_PAS_GAS_CMD_SOFT_RESET);
+        res = xensiv_pas_gas_cmd(dev, XENSIV_PAS_GAS_CMD_SOFT_RESET);
         xensiv_pas_gas_plat_delay(XENSIV_PAS_GAS_SOFT_RESET_DELAY_MS);
 
         if (XENSIV_PAS_GAS_OK == res) {
@@ -211,26 +223,57 @@ static int32_t xensiv_pas_gas_init(const xensiv_pas_gas_t *dev) {
     return res;
 }
 
-int32_t xensiv_pas_gas_init_i2c(xensiv_pas_gas_t *dev, void *ctx) {
+int32_t xensiv_pas_gas_base_perform_forced_compensation(const xensiv_pas_gas_t *dev, uint16_t gas_ref) {
     xensiv_pas_gas_plat_assert(dev != NULL);
-    xensiv_pas_gas_plat_assert(ctx != NULL);
 
-    dev->ctx = ctx;
-    dev->read = xensiv_pas_gas_i2c_read;
-    dev->write = xensiv_pas_gas_i2c_write;
+    xensiv_pas_gas_measurement_config_t meas_config;
+    int32_t res = xensiv_pas_gas_get_measurement_config(dev, &meas_config);
 
-    return xensiv_pas_gas_init(dev);
+    if (XENSIV_PAS_GAS_OK == res) {
+        meas_config.b.op_mode = XENSIV_PAS_GAS_OP_MODE_IDLE;
+        res = xensiv_pas_gas_set_measurement_config(dev, meas_config);
+    }
+
+    if (XENSIV_PAS_GAS_OK == res) {
+        // res = xensiv_pas_gas_set_measurement_rate(dev, XENSIV_PAS_GAS_FCS_MEAS_RATE_S);
+        res = xensiv_pas_gas_set_measurement_rate(dev, dev->fcs_meas_rate_s);
+    }
+
+    if (XENSIV_PAS_GAS_OK == res) {
+        res = xensiv_pas_gas_set_offset_compensation(dev, gas_ref);
+    }
+
+    if (XENSIV_PAS_GAS_OK == res) {
+        meas_config.b.op_mode = XENSIV_PAS_GAS_OP_MODE_CONTINUOUS;
+        meas_config.b.boc_cfg = XENSIV_PAS_GAS_BOC_CFG_FORCED;
+        res = xensiv_pas_gas_set_measurement_config(dev, meas_config);
+    }
+
+    if (XENSIV_PAS_GAS_OK == res) {
+        /* wait until the FCS is finished */
+        do
+        {
+            res = xensiv_pas_gas_get_measurement_config(dev, &meas_config);
+        } while ((XENSIV_PAS_GAS_OK != res) || (XENSIV_PAS_GAS_BOC_CFG_FORCED == meas_config.b.boc_cfg));
+    }
+
+    if (XENSIV_PAS_GAS_OK == res) {
+        meas_config.b.op_mode = XENSIV_PAS_GAS_OP_MODE_IDLE;
+        res = xensiv_pas_gas_set_measurement_config(dev, meas_config);
+    }
+
+    return res;
 }
 
-int32_t xensiv_pas_gas_init_uart(xensiv_pas_gas_t *dev, void *ctx) {
+int32_t xensiv_pas_gas_init(xensiv_pas_gas_t *dev, xensiv_pas_gas_interface_t itf, void *ctx) {
     xensiv_pas_gas_plat_assert(dev != NULL);
     xensiv_pas_gas_plat_assert(ctx != NULL);
 
-    dev->ctx = ctx;
-    dev->read = xensiv_pas_gas_uart_read;
-    dev->write = xensiv_pas_gas_uart_write;
+    dev->fcs_meas_rate_s = XENSIV_PAS_GAS_FCS_MEAS_RATE_S;
+    dev->meas_rate_min = XENSIV_PAS_GAS_MEAS_RATE_MIN;
+    dev->force_comp = xensiv_pas_gas_base_perform_forced_compensation;
 
-    return xensiv_pas_gas_init(dev);
+    return xensiv_pas_gas_base_init(dev, itf, ctx);
 }
 
 int32_t xensiv_pas_gas_set_reg(const xensiv_pas_gas_t *dev, uint8_t reg_addr, const uint8_t *data, uint8_t len) {
@@ -260,11 +303,11 @@ int32_t xensiv_pas_gas_get_id(const xensiv_pas_gas_t *dev, xensiv_pas_gas_id_t *
     return xensiv_pas_gas_get_reg(dev, (uint8_t)XENSIV_PAS_GAS_REG_PROD_ID, &(id->u), 1U);
 }
 
-int32_t xensiv_pas_gas_get_status(const xensiv_pas_gas_t *dev, void *status) {
+int32_t xensiv_pas_gas_get_status(const xensiv_pas_gas_t *dev, xensiv_pas_gas_status_t *status) {
     xensiv_pas_gas_plat_assert(dev != NULL);
     xensiv_pas_gas_plat_assert(status != NULL);
 
-    return xensiv_pas_gas_get_reg(dev, (uint8_t)XENSIV_PAS_GAS_REG_SENS_STS, status, 1U);
+    return xensiv_pas_gas_get_reg(dev, (uint8_t)XENSIV_PAS_GAS_REG_SENS_STS, &(status->u), 1U);
 }
 
 int32_t xensiv_pas_gas_clear_status(const xensiv_pas_gas_t *dev, uint8_t mask) {
@@ -286,16 +329,16 @@ int32_t xensiv_pas_gas_set_interrupt_config(const xensiv_pas_gas_t *dev, xensiv_
     return xensiv_pas_gas_set_reg(dev, (uint8_t)XENSIV_PAS_GAS_REG_INT_CFG, &(int_config.u), 1U);
 }
 
-int32_t xensiv_pas_gas_get_measurement_config(const xensiv_pas_gas_t *dev, void *meas_config) {
+int32_t xensiv_pas_gas_get_measurement_config(const xensiv_pas_gas_t *dev, xensiv_pas_gas_measurement_config_t *meas_config) {
     xensiv_pas_gas_plat_assert(dev != NULL);
     xensiv_pas_gas_plat_assert(meas_config != NULL);
 
-    return xensiv_pas_gas_get_reg(dev, (uint8_t)XENSIV_PAS_GAS_REG_MEAS_CFG, meas_config, 1U);
+    return xensiv_pas_gas_get_reg(dev, (uint8_t)XENSIV_PAS_GAS_REG_MEAS_CFG, &(meas_config->u), 1U);
 }
 
-int32_t xensiv_pas_gas_set_measurement_config(const xensiv_pas_gas_t *dev, void *meas_config) {
+int32_t xensiv_pas_gas_set_measurement_config(const xensiv_pas_gas_t *dev, xensiv_pas_gas_measurement_config_t meas_config) {
     xensiv_pas_gas_plat_assert(dev != NULL);
-    return xensiv_pas_gas_set_reg(dev, (uint8_t)XENSIV_PAS_GAS_REG_MEAS_CFG, (const uint8_t *)meas_config, 1U);
+    return xensiv_pas_gas_set_reg(dev, (uint8_t)XENSIV_PAS_GAS_REG_MEAS_CFG, &(meas_config.u), 1U);
 }
 
 int32_t xensiv_pas_gas_get_result(const xensiv_pas_gas_t *dev, uint16_t *val) {
@@ -315,6 +358,14 @@ int32_t xensiv_pas_gas_get_result(const xensiv_pas_gas_t *dev, uint16_t *val) {
     }
 
     return res;
+}
+
+int32_t xensiv_pas_gas_set_measurement_rate(const xensiv_pas_gas_t *dev, uint16_t val) {
+    xensiv_pas_gas_plat_assert(dev != NULL);
+    xensiv_pas_gas_plat_assert((val >= dev->meas_rate_min) && (val <= XENSIV_PAS_GAS_MEAS_RATE_MAX));
+
+    val = xensiv_pas_gas_plat_htons(val);
+    return xensiv_pas_gas_set_reg(dev, (uint8_t)XENSIV_PAS_GAS_REG_MEAS_RATE_H, (uint8_t *)&val, 2U);
 }
 
 int32_t xensiv_pas_gas_get_measurement_status(const xensiv_pas_gas_t *dev, xensiv_pas_gas_meas_status_t *status) {
@@ -364,30 +415,64 @@ int32_t xensiv_pas_gas_get_scratch_pad(const xensiv_pas_gas_t *dev, uint8_t *val
     return xensiv_pas_gas_get_reg(dev, (uint8_t)XENSIV_PAS_GAS_REG_SCRATCH_PAD, val, 1U);
 }
 
-int32_t xensiv_pas_gas_cmd(const xensiv_pas_gas_t *dev, void *cmd) {
-    if (dev && dev->cmd) {
-        return dev->cmd(dev, cmd);
-    }
-    return XENSIV_PAS_GAS_ERR_COMM;
+int32_t xensiv_pas_gas_cmd(const xensiv_pas_gas_t *dev, xensiv_pas_gas_cmd_t cmd) {
+    xensiv_pas_gas_plat_assert(dev != NULL);
+
+    return xensiv_pas_gas_set_reg(dev, (uint8_t)XENSIV_PAS_GAS_REG_SENS_RST, (const uint8_t *)&cmd, 1U);
 }
 
 int32_t xensiv_pas_gas_start_single_mode(const xensiv_pas_gas_t *dev) {
-    if (dev && dev->start_single_mode) {
-        return dev->start_single_mode(dev);
+    xensiv_pas_gas_plat_assert(dev != NULL);
+
+    xensiv_pas_gas_measurement_config_t meas_config;
+    int32_t res = xensiv_pas_gas_get_measurement_config(dev, &meas_config);
+
+    if (XENSIV_PAS_GAS_OK == res) {
+        if (meas_config.b.op_mode != XENSIV_PAS_GAS_OP_MODE_IDLE) {
+            meas_config.b.op_mode = XENSIV_PAS_GAS_OP_MODE_IDLE;
+            res = xensiv_pas_gas_set_measurement_config(dev, meas_config);
+        }
     }
-    return XENSIV_PAS_GAS_ERR_COMM;
+
+    if (XENSIV_PAS_GAS_OK == res) {
+        meas_config.b.op_mode = XENSIV_PAS_GAS_OP_MODE_SINGLE;
+        meas_config.b.boc_cfg = XENSIV_PAS_GAS_BOC_CFG_AUTOMATIC;
+        res = xensiv_pas_gas_set_measurement_config(dev, meas_config);
+    }
+
+    return res;
 }
 
 int32_t xensiv_pas_gas_start_continuous_mode(const xensiv_pas_gas_t *dev, uint16_t val) {
-    if (dev && dev->start_continuous_mode) {
-        return dev->start_continuous_mode(dev, val);
+    xensiv_pas_gas_plat_assert(dev != NULL);
+    xensiv_pas_gas_plat_assert((val >= dev->meas_rate_min) && (val <= XENSIV_PAS_GAS_MEAS_RATE_MAX));
+
+    xensiv_pas_gas_measurement_config_t meas_config;
+    int32_t res = xensiv_pas_gas_get_measurement_config(dev, &meas_config);
+
+    if (XENSIV_PAS_GAS_OK == res) {
+        if (meas_config.b.op_mode != XENSIV_PAS_GAS_OP_MODE_IDLE) {
+            meas_config.b.op_mode = XENSIV_PAS_GAS_OP_MODE_IDLE;
+            res = xensiv_pas_gas_set_measurement_config(dev, meas_config);
+        }
     }
-    return XENSIV_PAS_GAS_ERR_COMM;
+
+    if (XENSIV_PAS_GAS_OK == res) {
+        val = xensiv_pas_gas_plat_htons(val);
+        res = xensiv_pas_gas_set_reg(dev, (uint8_t)XENSIV_PAS_GAS_REG_MEAS_RATE_H, (uint8_t *)&val, 2U);
+    }
+
+    if (XENSIV_PAS_GAS_OK == res) {
+        meas_config.b.op_mode = XENSIV_PAS_GAS_OP_MODE_CONTINUOUS;
+        meas_config.b.boc_cfg = XENSIV_PAS_GAS_BOC_CFG_AUTOMATIC;
+        res = xensiv_pas_gas_set_measurement_config(dev, meas_config);
+    }
+
+    return res;
 }
 
-int32_t xensiv_pas_gas_set_measurement_rate(const xensiv_pas_gas_t *dev, uint16_t val) {
-    if (dev && dev->set_measurement_rate) {
-        return dev->set_measurement_rate(dev, val);
-    }
-    return XENSIV_PAS_GAS_ERR_COMM;
+int32_t xensiv_pas_gas_perform_forced_compensation(const xensiv_pas_gas_t *dev, uint16_t gas_ref) {
+    xensiv_pas_gas_plat_assert(dev != NULL);
+
+    return dev->force_comp(dev, gas_ref);
 }

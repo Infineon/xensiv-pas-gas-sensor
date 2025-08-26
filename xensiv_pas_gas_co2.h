@@ -25,6 +25,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include "xensiv_pas_gas.h"
 
 /** Minimum allowed measurement rate */
 #define XENSIV_PAS_GAS_CO2_MEAS_RATE_MIN            (5U)
@@ -50,6 +51,7 @@ typedef enum
 /** Structure of the sensor's status register (SENS_STS) */
 typedef union
 {
+    xensiv_pas_gas_status_t base;                       /*<! Base status structure */
     struct
     {
         uint32_t : 3;
@@ -59,13 +61,14 @@ typedef union
         uint32_t ortmp : 1;                             /*!< Out-of-range temperature error bit */
         uint32_t pwm_dis_st : 1;                        /*!< PWM_DIS pin status */
         uint32_t sen_rdy : 1;                           /*!< Sensor ready bit */
-    } b;                                                /*!< Structure used for bit  access */
+    } b;                                                /*!< Structure used for bit access */
     uint8_t u;                                          /*!< Type used for byte access */
 } xensiv_pas_gas_co2_status_t;
 
 /** Structure of the sensor's measurement configuration register (MEAS_CFG) */
 typedef union
 {
+    xensiv_pas_gas_measurement_config_t base;           /*<! Base measurement configuration structure */
     struct
     {
         uint32_t op_mode : 2;                           /*!< @ref xensiv_pas_gas_op_mode_t */
@@ -73,6 +76,18 @@ typedef union
         uint32_t pwm_mode : 1;                          /*!< @ref xensiv_pas_gas_pwm_mode_t */
         uint32_t pwm_outen : 1;                         /*!< PWM output software enable bit */
         uint32_t : 2;
-    } b;                                                /*!< Structure used for bit  access */
+    } b;                                                /*!< Structure used for bit access */
     uint8_t u;                                          /*!< Type used for byte access */
 } xensiv_pas_gas_co2_measurement_config_t;
+
+/**
+ * @brief Initializes the XENSIV™ PAS GAS CO2 device.
+ * It initializes the dev structure, verifies the integrity of the communication layer of the serial communication interface, and checks whether the sensor is ready
+ *
+ * @param[in out] dev Pointer to a XENSIV™ PAS GAS CO2 sensor device structure allocated by the user,
+ * but the init function will initialize its contents
+ * @param[in] itf Communication interface (I2C/UART)
+ * @param[in] ctx Pointer to the platform-specific specific protocol communication handler
+ * @return XENSIV_PAS_GAS_OK if the initialization was successful; an error indicating what went wrong otherwise
+ */
+int32_t xensiv_pas_gas_co2_init(xensiv_pas_gas_t *dev, xensiv_pas_gas_interface_t itf, void *ctx);
