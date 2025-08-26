@@ -55,6 +55,16 @@ typedef union
     uint8_t u;                                          /*!< Type used for byte access */
 } xensiv_pas_gas_r290_status_t;
 
+/** Structure of the R290 sensor's alarm configuration (ALARM_CFG) */
+typedef union
+{
+    struct
+    {
+        uint32_t alarm_poll : 2;   /*!< Pin ALARM electrical configuration (bits 0-1) */
+        uint32_t : 6;    /*!< Reserved bits (bits 2-7, always 0) */
+    } b;
+    uint8_t u;                    /*!< Type used for byte access */
+} xensiv_pas_gas_r290_alarm_config_t;
 /**
  * @brief Initializes the XENSIV™ PAS GAS R290 device.
  * It initializes the dev structure, verifies the integrity of the communication layer of the serial communication interface, and checks whether the sensor is ready
@@ -85,3 +95,21 @@ int32_t xensiv_pas_gas_r290_get_device_id(const xensiv_pas_gas_t *dev, void *dev
  * @return XENSIV_PAS_GAS_OK if the configuration was successful; an error indicating what went wrong otherwise
  */
 int32_t xensiv_pas_gas_r290_aboc_prefill(const xensiv_pas_gas_t *dev, uint8_t prefill);
+
+/**
+ * @brief Configures the alarm configuration.
+ *
+ * @param[in] dev Pointer to a XENSIV™ PAS GAS R290 sensor device structure
+ * @param[in] alarm_config New alarm configuration to apply
+ * @return XENSIV_PAS_GAS_OK if the configuration was successful; an error indicating what went wrong otherwise
+ */
+int32_t xensiv_pas_gas_r290_set_alarm_config(const xensiv_pas_gas_t *dev, xensiv_pas_gas_r290_alarm_config_t alarm_config);
+
+/**
+ * @brief Reads the alarm configuration.
+ *
+ * @param[in] dev Pointer to a XENSIV™ PAS GAS R290 sensor device structure
+ * @param[out] alarm_config Pointer to a structure to store the alarm configuration
+ * @return XENSIV_PAS_GAS_OK if the read was successful; an error indicating what went wrong otherwise
+ */
+int32_t xensiv_pas_gas_r290_get_alarm_config(const xensiv_pas_gas_t *dev, xensiv_pas_gas_r290_alarm_config_t *alarm_config);
