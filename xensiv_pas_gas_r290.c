@@ -36,6 +36,12 @@ int32_t xensiv_pas_gas_r290_get_device_id(const xensiv_pas_gas_t *dev, void *dev
     return xensiv_pas_gas_get_reg(dev, (uint8_t)XENSIV_PAS_GAS_R290_REG_DEV_ID, (uint8_t *)dev_id, 1U);
 }
 
+int32_t xensiv_pas_gas_r290_aboc_prefill(const xensiv_pas_gas_t *dev, uint8_t prefill) {
+    xensiv_pas_gas_plat_assert(dev != NULL);
+
+    return xensiv_pas_gas_set_reg(dev, (uint8_t)XENSIV_PAS_GAS_R290_REG_ABOC_PREFILL, (uint8_t *)&prefill, 1U);
+}
+
 int32_t xensiv_pas_gas_r290_init(xensiv_pas_gas_t *dev, xensiv_pas_gas_interface_t itf, void *ctx) {
     xensiv_pas_gas_plat_assert(dev != NULL);
     xensiv_pas_gas_plat_assert(ctx != NULL);
