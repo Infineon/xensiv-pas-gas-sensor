@@ -29,8 +29,6 @@
 
 #define XENSIV_PAS_GAS_SOFT_RESET_DELAY_MS       (2000U)
 
-#define XENSIV_PAS_GAS_FCS_MEAS_RATE_S           (10)
-
 #define XENSIV_PAS_GAS_I2C_WRITE_BUFFER_LEN      (17U)
 #define XENSIV_PAS_GAS_UART_WRITE_XFER_BUF_SIZE  (8U)
 #define XENSIV_PAS_GAS_UART_READ_XFER_BUF_SIZE   (5U)
@@ -235,7 +233,6 @@ int32_t xensiv_pas_gas_base_perform_forced_compensation(const xensiv_pas_gas_t *
     }
 
     if (XENSIV_PAS_GAS_OK == res) {
-        // res = xensiv_pas_gas_set_measurement_rate(dev, XENSIV_PAS_GAS_FCS_MEAS_RATE_S);
         res = xensiv_pas_gas_set_measurement_rate(dev, dev->fcs_meas_rate_s);
     }
 
@@ -263,17 +260,6 @@ int32_t xensiv_pas_gas_base_perform_forced_compensation(const xensiv_pas_gas_t *
     }
 
     return res;
-}
-
-int32_t xensiv_pas_gas_init(xensiv_pas_gas_t *dev, xensiv_pas_gas_interface_t itf, void *ctx) {
-    xensiv_pas_gas_plat_assert(dev != NULL);
-    xensiv_pas_gas_plat_assert(ctx != NULL);
-
-    dev->fcs_meas_rate_s = XENSIV_PAS_GAS_FCS_MEAS_RATE_S;
-    dev->meas_rate_min = XENSIV_PAS_GAS_MEAS_RATE_MIN;
-    dev->force_comp = xensiv_pas_gas_base_perform_forced_compensation;
-
-    return xensiv_pas_gas_base_init(dev, itf, ctx);
 }
 
 int32_t xensiv_pas_gas_set_reg(const xensiv_pas_gas_t *dev, uint8_t reg_addr, const uint8_t *data, uint8_t len) {

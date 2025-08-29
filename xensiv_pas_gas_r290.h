@@ -55,18 +55,6 @@ typedef union
     uint8_t u;                                          /*!< Type used for byte access */
 } xensiv_pas_gas_r290_status_t;
 
-/** Structure of the R290 sensor's measurement configuration register (MEAS_CFG) */
-typedef union
-{
-    xensiv_pas_gas_measurement_config_t base;           /*<! Base measurement configuration structure */
-    struct
-    {
-        uint32_t op_mode : 2;                           /*!< @ref xensiv_pas_gas_op_mode_t */
-        uint32_t boc_cfg : 2;                           /*!< @ref xensiv_pas_gas_boc_cfg_t */
-    } b;                                                /*!< Structure used for bit access */
-    uint8_t u;                                          /*!< Type used for byte access */
-} xensiv_pas_gas_r290_measurement_config_t;
-
 /**
  * @brief Initializes the XENSIV™ PAS GAS R290 device.
  * It initializes the dev structure, verifies the integrity of the communication layer of the serial communication interface, and checks whether the sensor is ready
