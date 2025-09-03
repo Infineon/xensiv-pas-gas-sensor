@@ -76,6 +76,16 @@ typedef union {
     uint8_t u;                    /*!< Type used for byte access */
 } xensiv_pas_gas_r290_aboc_cycle_config_t;
 
+/** structure of the R290 sensor's denoise configuration (DENOISE_CFG) */
+typedef union
+{
+    struct
+    {
+        uint32_t smoothing_factor : 7;  /*!< Smoothing factor (bits 0 - 6) */
+        uint32_t : 1;                   /*!< Reserved bit (bit 7, always 0) */
+    } b;
+    uint8_t u; /*!< Type used for byte access */
+} xensiv_pas_gas_r290_denoise_config_t;
 
 /**
  * @brief Initializes the XENSIV™ PAS GAS R290 device.
@@ -144,3 +154,21 @@ int32_t xensiv_pas_gas_r290_set_aboc_cycle(const xensiv_pas_gas_t *dev, xensiv_p
  */
 
 int32_t xensiv_pas_gas_r290_get_aboc_cycle(const xensiv_pas_gas_t *dev, xensiv_pas_gas_r290_aboc_cycle_config_t *aboc_cycle);
+
+/**
+ * @brief Configures the denoising of the XENSIV™ PAS GAS R290 sensor.
+ *
+ * @param[in] dev Pointer to a XENSIV™ PAS GAS R290 sensor device structure
+ * @param[in] denoise_config New denoising configuration
+ * @return XENSIV_PAS_GAS_OK if the configuration was successful; an error indicating what went wrong otherwise
+ */
+int32_t xensiv_pas_gas_r290_set_denoise_config(const xensiv_pas_gas_t *dev, xensiv_pas_gas_r290_denoise_config_t denoise_config);
+
+/**
+ * @brief Gets the denoising smoothing factor of XENSIV™ PAS GAS R290 sensor.
+ *
+ * @param[in] dev Pointer to a XENSIV™ PAS GAS R290 sensor device structure
+ * @param[in] denoise_config Pointer to a structure containing the denoising configuration
+ * @return XENSIV_PAS_GAS_OK if the configuration was successful; an error indicating what went wrong otherwise
+ */
+int32_t xensiv_pas_gas_r290_get_denoise_config(const xensiv_pas_gas_t *dev, xensiv_pas_gas_r290_denoise_config_t *denoise_config);

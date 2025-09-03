@@ -57,12 +57,29 @@ int32_t xensiv_pas_gas_r290_get_alarm_config(const xensiv_pas_gas_t *dev, xensiv
 
 int32_t xensiv_pas_gas_r290_set_aboc_cycle(const xensiv_pas_gas_t *dev, xensiv_pas_gas_r290_aboc_cycle_config_t aboc_cycle) {
     xensiv_pas_gas_plat_assert(dev != NULL);
+
     return xensiv_pas_gas_set_reg(dev, (uint8_t)XENSIV_PAS_GAS_R290_REG_ABOC_CYCLE, &aboc_cycle.u, 1U);
 }
+
 int32_t xensiv_pas_gas_r290_get_aboc_cycle(const xensiv_pas_gas_t *dev, xensiv_pas_gas_r290_aboc_cycle_config_t *aboc_cycle) {
     xensiv_pas_gas_plat_assert(dev != NULL);
     xensiv_pas_gas_plat_assert(aboc_cycle != NULL);
+
     return xensiv_pas_gas_get_reg(dev, (uint8_t)XENSIV_PAS_GAS_R290_REG_ABOC_CYCLE, &(aboc_cycle->u), 1U);
+}
+
+
+int32_t xensiv_pas_gas_r290_set_denoise_config(const xensiv_pas_gas_t *dev, xensiv_pas_gas_r290_denoise_config_t denoise_config) {
+    xensiv_pas_gas_plat_assert(dev != NULL);
+
+    return xensiv_pas_gas_set_reg(dev, (uint8_t)XENSIV_PAS_GAS_R290_REG_DENOISE_CFG, &denoise_config.u, 1U);
+}
+
+int32_t xensiv_pas_gas_r290_get_denoise_config(const xensiv_pas_gas_t *dev, xensiv_pas_gas_r290_denoise_config_t *denoise_config) {
+    xensiv_pas_gas_plat_assert(dev != NULL);
+    xensiv_pas_gas_plat_assert(denoise_config != NULL);
+
+    return xensiv_pas_gas_get_reg(dev, (uint8_t)XENSIV_PAS_GAS_R290_REG_DENOISE_CFG, &denoise_config->u, 1U);
 }
 
 int32_t xensiv_pas_gas_r290_init(xensiv_pas_gas_t *dev, xensiv_pas_gas_interface_t itf, void *ctx) {
