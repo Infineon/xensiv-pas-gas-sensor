@@ -87,6 +87,37 @@ typedef union
     uint8_t u; /*!< Type used for byte access */
 } xensiv_pas_gas_r290_denoise_config_t;
 
+/** Structure of the R290 sensor's self test register (SELF_TEST) */
+typedef union
+{
+    struct
+    {
+        uint32_t voltage_err       : 1;  /*!< VOLTAGE_ERR: Voltage error */
+        uint32_t temp_err          : 1;  /*!< TEMP_ERR: Temperature error */
+        uint32_t simic_err         : 1;  /*!< SIMIC_ERR: Simic error */
+        uint32_t emitter_err       : 1;  /*!< EMITTER_ERR: Emitter error */
+        uint32_t aboc_drift_err    : 1;  /*!< ABOC_DRIFT_ERR: ABOC drift error */
+        uint32_t lifetime_err      : 1;  /*!< LIFETIME_ERR: Lifetime error */
+        uint32_t : 1;
+        uint32_t replace_s_en      : 1;  /*!< REPLACE_S_EN: Replace sensor enable */
+    } b;                                /*!< Structure used for bit access */
+    uint8_t u;                        /*!< Type used for byte access */
+} xensiv_pas_gas_r290_self_test_t;
+
+/** Structure of the R290 sensor's self test clear register (SELF_TEST_CLR) */
+typedef union {
+    struct {
+        uint8_t voltage_err_clr : 1;    /*!< Bit 0: Out of range VDD5V error clear */
+        uint8_t temp_err_clr    : 1;    /*!< Bit 1: Out of range temperature error clear */
+        uint8_t simic_err_clr  : 1;     /*!< Bit 2: Simic error clear */
+        uint8_t emitter_err_clr : 1;    /*!< Bit 3: Emitter error clear */
+        uint8_t aboc_drift_err_clr : 1; /*!< Bit 4: ABOC drift error clear */
+        uint8_t : 3;                    /*!< Bits 5-7: Reserved, must be written as 0 */
+    } b;
+    uint8_t u;                       /*!< Type used for byte access */
+} xensiv_pas_gas_r290_self_test_clr_t;
+
+
 /**
  * @brief Initializes the XENSIV™ PAS GAS R290 device.
  * It initializes the dev structure, verifies the integrity of the communication layer of the serial communication interface, and checks whether the sensor is ready
@@ -172,3 +203,21 @@ int32_t xensiv_pas_gas_r290_set_denoise_config(const xensiv_pas_gas_t *dev, xens
  * @return XENSIV_PAS_GAS_OK if the configuration was successful; an error indicating what went wrong otherwise
  */
 int32_t xensiv_pas_gas_r290_get_denoise_config(const xensiv_pas_gas_t *dev, xensiv_pas_gas_r290_denoise_config_t *denoise_config);
+
+/**
+ * @brief Configures the self test
+ *
+ * @param[in] dev Pointer to a XENSIV™ PAS GAS R290 sensor device structure
+ * @param[out] self_test Pointer to a structure to store the self test results
+ * @return XENSIV_PAS_GAS_OK if the configuration was successful; an error indicating what went wrong otherwise
+ */
+int32_t xensiv_pas_gas_r290_get_self_test(const xensiv_pas_gas_t *dev, xensiv_pas_gas_r290_self_test_t *self_test);
+
+/**
+ * @brief Clears the self test results.
+ *
+ * @param[in] dev Pointer to a XENSIV™ PAS GAS R290 sensor device structure
+ * @param[in] self_test_clr Pointer to a structure containing the self test clear configuration
+ * @return XENSIV_PAS_GAS_OK if the configuration was successful; an error indicating what went wrong otherwise
+ */
+int32_t xensiv_pas_gas_r290_clr_self_test(const xensiv_pas_gas_t *dev, xensiv_pas_gas_r290_self_test_clr_t self_test_clr);

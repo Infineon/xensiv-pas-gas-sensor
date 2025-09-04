@@ -68,7 +68,6 @@ int32_t xensiv_pas_gas_r290_get_aboc_cycle(const xensiv_pas_gas_t *dev, xensiv_p
     return xensiv_pas_gas_get_reg(dev, (uint8_t)XENSIV_PAS_GAS_R290_REG_ABOC_CYCLE, &(aboc_cycle->u), 1U);
 }
 
-
 int32_t xensiv_pas_gas_r290_set_denoise_config(const xensiv_pas_gas_t *dev, xensiv_pas_gas_r290_denoise_config_t denoise_config) {
     xensiv_pas_gas_plat_assert(dev != NULL);
 
@@ -80,6 +79,19 @@ int32_t xensiv_pas_gas_r290_get_denoise_config(const xensiv_pas_gas_t *dev, xens
     xensiv_pas_gas_plat_assert(denoise_config != NULL);
 
     return xensiv_pas_gas_get_reg(dev, (uint8_t)XENSIV_PAS_GAS_R290_REG_DENOISE_CFG, &denoise_config->u, 1U);
+}
+
+int32_t xensiv_pas_gas_r290_get_self_test(const xensiv_pas_gas_t *dev, xensiv_pas_gas_r290_self_test_t *self_test) {
+    xensiv_pas_gas_plat_assert(dev != NULL);
+    xensiv_pas_gas_plat_assert(self_test != NULL);
+
+    return xensiv_pas_gas_get_reg(dev, (uint8_t)XENSIV_PAS_GAS_R290_REG_SELF_TEST, &self_test->u, 1U);
+}
+
+int32_t xensiv_pas_gas_r290_clr_self_test(const xensiv_pas_gas_t *dev, xensiv_pas_gas_r290_self_test_clr_t self_test_clr) {
+    xensiv_pas_gas_plat_assert(dev != NULL);
+
+    return xensiv_pas_gas_set_reg(dev, (uint8_t)XENSIV_PAS_GAS_R290_REG_SELF_TEST_CLR, &self_test_clr.u, 1U);
 }
 
 int32_t xensiv_pas_gas_r290_init(xensiv_pas_gas_t *dev, xensiv_pas_gas_interface_t itf, void *ctx) {
