@@ -7,10 +7,10 @@ set(CMAKE_C_FLAGS "-Wall -Werror")
 
 # Library sources (no main.c)
 set(SENSOR_SRC
-    xensiv_pas_gas.c
-    xensiv_pas_gas_platform.c
-    xensiv_pas_gas_co2.c
-    xensiv_pas_gas_r290.c
+    src/xensiv_pas_gas.c
+    src/xensiv_pas_gas_platform.c
+    src/xensiv_pas_gas_co2.c
+    src/xensiv_pas_gas_r290.c
 )
 
 add_library(xensiv_pas_gas_sensor STATIC ${SENSOR_SRC})
