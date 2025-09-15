@@ -65,6 +65,8 @@
 #define XENSIV_PAS_GAS_ORTMP                     (6)
 /** Result code indicating that a new GAS value is not yet ready */
 #define XENSIV_PAS_GAS_READ_NRDY                 (7)
+/** Result code indicating that an invalid sensor interface was selected*/
+#define XENSIV_PAS_GAS_INVALID_SENSOR_INTERFACE  (8)
 
 /** Minimum allowed measurement rate */
 #define XENSIV_PAS_GAS_MEAS_RATE_MIN             (5U)
