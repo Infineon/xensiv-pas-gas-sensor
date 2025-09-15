@@ -22,6 +22,9 @@
  * limitations under the License.
  **************************************************************************************************/
 
+#ifndef XENSIV_PAS_GAS_CO2_H_
+#define XENSIV_PAS_GAS_CO2_H_
+
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -80,6 +83,10 @@ typedef union
     uint8_t u;                                          /*!< Type used for byte access */
 } xensiv_pas_gas_co2_measurement_config_t;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @brief Initializes the XENSIV™ PAS GAS CO2 device.
  * It initializes the dev structure, verifies the integrity of the communication layer of the serial communication interface, and checks whether the sensor is ready
@@ -91,3 +98,9 @@ typedef union
  * @return XENSIV_PAS_GAS_OK if the initialization was successful; an error indicating what went wrong otherwise
  */
 int32_t xensiv_pas_gas_co2_init(xensiv_pas_gas_t *dev, xensiv_pas_gas_interface_t itf, void *ctx);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* XENSIV_PAS_GAS_CO2_H_ */

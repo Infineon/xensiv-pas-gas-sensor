@@ -6,7 +6,15 @@
  ***************************************************************************************************/
 #include "xensiv_pas_gas_platform.h"
 
-int32_t xensiv_pas_gas_plat_i2c_transfer(void *ctx, uint16_t dev_addr, const uint8_t *tx_buffer, size_t tx_len, uint8_t *rx_buffer, size_t rx_len) {
+#ifndef __weak
+#if defined(__GNUC__) || defined(__ARMCC_VERSION)
+#define __weak __attribute__((weak))
+#else
+#define __weak
+#endif
+#endif
+
+__weak int32_t xensiv_pas_gas_plat_i2c_transfer(void *ctx, uint16_t dev_addr, const uint8_t *tx_buffer, size_t tx_len, uint8_t *rx_buffer, size_t rx_len) {
     (void)ctx;
     (void)dev_addr;
     (void)tx_buffer;
@@ -16,29 +24,29 @@ int32_t xensiv_pas_gas_plat_i2c_transfer(void *ctx, uint16_t dev_addr, const uin
     return 0;
 }
 
-int32_t xensiv_pas_gas_plat_uart_read(void *ctx, uint8_t *data, size_t len) {
+__weak int32_t xensiv_pas_gas_plat_uart_read(void *ctx, uint8_t *data, size_t len) {
     (void)ctx;
     (void)data;
     (void)len;
     return 0;
 }
 
-int32_t xensiv_pas_gas_plat_uart_write(void *ctx, uint8_t *data, size_t len) {
+__weak int32_t xensiv_pas_gas_plat_uart_write(void *ctx, uint8_t *data, size_t len) {
     (void)ctx;
     (void)data;
     (void)len;
     return 0;
 }
 
-void xensiv_pas_gas_plat_delay(uint32_t ms) {
+__weak void xensiv_pas_gas_plat_delay(uint32_t ms) {
     (void)ms;
 }
 
-uint16_t xensiv_pas_gas_plat_htons(uint16_t x) {
+__weak uint16_t xensiv_pas_gas_plat_htons(uint16_t x) {
     (void)x;
     return 0;
 }
 
-void xensiv_pas_gas_plat_assert(int expr) {
+__weak void xensiv_pas_gas_plat_assert(int expr) {
     (void)expr;
 }
