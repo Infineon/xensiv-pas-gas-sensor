@@ -11,6 +11,7 @@ set(SENSOR_SRC
     src/xensiv_pas_gas_platform.c
     src/xensiv_pas_gas_co2.c
     src/xensiv_pas_gas_r290.c
+    src/xensiv_pas_gas_a2l.c
 )
 
 add_library(xensiv_pas_gas_sensor STATIC ${SENSOR_SRC})
