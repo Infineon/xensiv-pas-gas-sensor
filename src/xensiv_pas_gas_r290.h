@@ -31,6 +31,11 @@
 #include "xensiv_pas_gas.h"
 #include "xensiv_pas_gas_r290_regs.h"
 
+/**
+ * \addtogroup group_board_libs XENSIV™ PAS GAS R290 sensor
+ * \{
+ */
+
 /************************************** Macros *******************************************/
 #define XENSIV_PAS_GAS_R290_MEAS_RATE_MIN            (3U)
 
@@ -120,6 +125,7 @@ typedef union {
     uint8_t u;                       /*!< Type used for byte access */
 } xensiv_pas_gas_r290_self_test_clr_t;
 
+/******************************* Function prototypes *************************************/
 
 #ifdef __cplusplus
 extern "C" {
@@ -233,5 +239,7 @@ int32_t xensiv_pas_gas_r290_clr_self_test(const xensiv_pas_gas_t *dev, xensiv_pa
 #ifdef __cplusplus
 }
 #endif
+
+/** \} group_board_libs */
 
 #endif /* XENSIV_PAS_GAS_R290_H_ */

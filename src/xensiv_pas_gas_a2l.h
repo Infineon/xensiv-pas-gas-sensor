@@ -31,6 +31,11 @@
 #include "xensiv_pas_gas.h"
 #include "xensiv_pas_gas_a2l_regs.h"
 
+/**
+ * \addtogroup group_board_libs XENSIV™ PAS GAS A2L sensor
+ * \{
+ */
+
 /************************************** Macros *******************************************/
 #define XENSIV_PAS_GAS_A2L_MEAS_RATE_MIN            (3U)
 #define XENSIV_PAS_GAS_A2L_FCS_MEAS_RATE_S          (3U)
@@ -158,6 +163,8 @@ typedef union {
     } b;
     uint8_t u;                       /*!< Type used for byte access */
 } xensiv_pas_gas_a2l_humidity_control_t;
+
+/******************************* Function prototypes *************************************/
 
 #ifdef __cplusplus
 extern "C" {
@@ -375,5 +382,7 @@ int32_t xensiv_pas_gas_a2l_get_humidity_control(const xensiv_pas_gas_t *dev, xen
 #ifdef __cplusplus
 }
 #endif
+
+/** \} group_board_libs */
 
 #endif /* XENSIV_PAS_GAS_A2L_H_ */
