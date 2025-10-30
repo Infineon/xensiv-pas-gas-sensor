@@ -85,11 +85,11 @@
 #define XENSIV_PAS_GAS_REG_MEAS_CFG_BOC_CFG_MSK          (0x03U << XENSIV_PAS_GAS_REG_MEAS_CFG_BOC_CFG_POS)      /*!< MEAS_CFG: BOC_CFG mask */
 
 // ------------------- GAS Data Fields -------------------//
-#define XENSIV_PAS_GAS_REG_GASCONC_H_VAL_POS              (0U)                                                    /*!< GASCONC_H: VAL position */
-#define XENSIV_PAS_GAS_REG_GASCONC_H_VAL_MSK              (0xffU << XENSIV_PAS_GAS_REG_GASCONC_H_VAL_POS)         /*!< GASCONC_H: VAL mask */
+#define XENSIV_PAS_GAS_REG_GASCONC_H_VAL_POS              (0U)                                                   /*!< GASCONC_H: VAL position */
+#define XENSIV_PAS_GAS_REG_GASCONC_H_VAL_MSK              (0xffU << XENSIV_PAS_GAS_REG_GASCONC_H_VAL_POS)        /*!< GASCONC_H: VAL mask */
 
-#define XENSIV_PAS_GAS_REG_GASCONC_L_VAL_POS              (0U)                                                    /*!< GASCONC_L: VAL position */
-#define XENSIV_PAS_GAS_REG_GASCONC_L_VAL_MSK              (0xffU << XENSIV_PAS_GAS_REG_GASCONC_L_VAL_POS)          /*!< GASCONC_L: VAL mask */
+#define XENSIV_PAS_GAS_REG_GASCONC_L_VAL_POS              (0U)                                                   /*!< GASCONC_L: VAL position */
+#define XENSIV_PAS_GAS_REG_GASCONC_L_VAL_MSK              (0xffU << XENSIV_PAS_GAS_REG_GASCONC_L_VAL_POS)        /*!< GASCONC_L: VAL mask */
 
 // ------------------- MEAS_STS Bitfields -------------------//
 #define XENSIV_PAS_GAS_REG_MEAS_STS_ALARM_CLR_POS        (0U)                                                    /*!< MEAS_STS: ALARM_CLR position */
@@ -138,7 +138,7 @@
 
 // ------------------- SENS_RST Bitfields -------------------//
 #define XENSIV_PAS_GAS_REG_SENS_RST_SRTRG_POS            (0U)                                                    /*!< SENS_RST: SRTRG position */
-#define XENSIV_PAS_GAS_REG_SENS_RST_SRTRG_MSK            (0xffU << XENSIV_PAS_GAS_REG_SENS_RST_SRTRG_POS)       /*!< SENS_RST: SRTRG mask */
+#define XENSIV_PAS_GAS_REG_SENS_RST_SRTRG_MSK            (0xffU << XENSIV_PAS_GAS_REG_SENS_RST_SRTRG_POS)        /*!< SENS_RST: SRTRG mask */
 
 /** \} group_board_libs */
 

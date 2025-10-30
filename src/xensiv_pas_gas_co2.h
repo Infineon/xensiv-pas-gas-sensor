@@ -55,8 +55,8 @@ typedef enum
 /** Enum defining the PWM mode configuration */
 typedef enum
 {
-    XENSIV_PAS_GAS_CO2_PWM_MODE_SINGLE_PULSE = 0U,           /**< PWM single-pulse */
-    XENSIV_PAS_GAS_CO2_PWM_MODE_TRAIN_PULSE = 1U             /**< PWM pulse-train mode */
+    XENSIV_PAS_GAS_CO2_PWM_MODE_SINGLE_PULSE = 0U,         /**< PWM single-pulse */
+    XENSIV_PAS_GAS_CO2_PWM_MODE_TRAIN_PULSE = 1U           /**< PWM pulse-train mode */
 } xensiv_pas_gas_co2_pwm_mode_t;
 
 /** Structure of the sensor's status register (SENS_STS) */
