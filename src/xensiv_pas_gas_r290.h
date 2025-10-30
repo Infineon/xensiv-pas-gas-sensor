@@ -69,17 +69,17 @@ typedef union
     struct
     {
         uint32_t alarm_poll : 2;   /*!< Pin ALARM electrical configuration (bits 0-1) */
-        uint32_t : 6;    /*!< Reserved bits (bits 2-7, always 0) */
+        uint32_t : 6;              /*!< Reserved bits (bits 2-7, always 0) */
     } b;
-    uint8_t u;                    /*!< Type used for byte access */
+    uint8_t u;                     /*!< Type used for byte access */
 } xensiv_pas_gas_r290_alarm_config_t;
 
 /** Structure of the R290 sensor's aboc cycle configuration ( ABOC_CYCLE) */
 typedef union {
     struct
     {
-        uint32_t aboc_cycle : 7; /*!< ABOC cycle in days (bits 0 - 6) */
-        uint32_t : 1;           /*!< Reserved bit (bit 7, always 0) */
+        uint32_t aboc_cycle : 7;  /*!< ABOC cycle in days (bits 0 - 6) */
+        uint32_t : 1;             /*!< Reserved bit (bit 7, always 0) */
     } b;
     uint8_t u;                    /*!< Type used for byte access */
 } xensiv_pas_gas_r290_aboc_cycle_config_t;
@@ -92,7 +92,7 @@ typedef union
         uint32_t smoothing_factor : 7;  /*!< Smoothing factor (bits 0 - 6) */
         uint32_t : 1;                   /*!< Reserved bit (bit 7, always 0) */
     } b;
-    uint8_t u; /*!< Type used for byte access */
+    uint8_t u;                          /*!< Type used for byte access */
 } xensiv_pas_gas_r290_denoise_config_t;
 
 /** Structure of the R290 sensor's self test register (SELF_TEST) */
@@ -108,8 +108,8 @@ typedef union
         uint32_t lifetime_err      : 1;  /*!< LIFETIME_ERR: Lifetime error */
         uint32_t : 1;
         uint32_t replace_s_en      : 1;  /*!< REPLACE_S_EN: Replace sensor enable */
-    } b;                                /*!< Structure used for bit access */
-    uint8_t u;                        /*!< Type used for byte access */
+    } b;                                 /*!< Structure used for bit access */
+    uint8_t u;                           /*!< Type used for byte access */
 } xensiv_pas_gas_r290_self_test_t;
 
 /** Structure of the R290 sensor's self test clear register (SELF_TEST_CLR) */
@@ -122,7 +122,7 @@ typedef union {
         uint8_t aboc_drift_err_clr : 1; /*!< Bit 4: ABOC drift error clear */
         uint8_t : 3;                    /*!< Bits 5-7: Reserved, must be written as 0 */
     } b;
-    uint8_t u;                       /*!< Type used for byte access */
+    uint8_t u;                          /*!< Type used for byte access */
 } xensiv_pas_gas_r290_self_test_clr_t;
 
 /******************************* Function prototypes *************************************/

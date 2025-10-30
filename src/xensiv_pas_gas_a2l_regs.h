@@ -121,8 +121,8 @@
 #define XENSIV_PAS_GAS_A2L_REG_ALARM_HYS_L_MASK        (0xffU << XENSIV_PAS_GAS_A2L_REG_ALARM_HYS_L_POS)                                    /**< ALARM_HYS_L: Hysteresis low mask */
 
 // ---------------------------- ABS_HUM_REF_H ---------------------------- //
-#define XENSIV_PAS_GAS_A2L_REG_ABS_HUM_REF_H_POS       (0x0U)                                                                              /**< ABS_HUM_REF_H: Absolute humidity high position */
-#define XENSIV_PAS_GAS_A2L_REG_ABS_HUM_REF_H_MASK      (0x03U << XENSIV_PAS_GAS_A2L_REG_ABS_HUM_REF_H_POS)                                 /**< ABS_HUM_REF_H: Absolute humidity high mask */
+#define XENSIV_PAS_GAS_A2L_REG_ABS_HUM_REF_H_POS       (0x0U)                                                                               /**< ABS_HUM_REF_H: Absolute humidity high position */
+#define XENSIV_PAS_GAS_A2L_REG_ABS_HUM_REF_H_MASK      (0x03U << XENSIV_PAS_GAS_A2L_REG_ABS_HUM_REF_H_POS)                                  /**< ABS_HUM_REF_H: Absolute humidity high mask */
 
 // ---------------------------- ABS_HUM_REF_L ---------------------------- //
 #define XENSIV_PAS_GAS_A2L_REG_ABS_HUM_REF_L_POS       (0x0U)                                                                               /**< ABS_HUM_REF_L: Absolute humidity low position */
